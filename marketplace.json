@@ -1,0 +1,23 @@
+{
+  "$schema": "https://claude.ai/schemas/marketplace.json",
+  "name": "mybacklinks",
+  "displayName": "MyBacklinks Plugins",
+  "description": "Official plugins and skills from MyBacklinks - backlink management platform for indie hackers",
+  "homepage": "https://mybacklinks.app",
+  "plugins": [
+    {
+      "name": "backlink-submission-skill",
+      "displayName": "Backlink Submission Skill",
+      "description": "Automate backlink submission workflow using MyBacklinks MCP and browser automation",
+      "version": "1.0.0",
+      "path": "backlink-submission-skill",
+      "type": "skill",
+      "keywords": ["SEO", "backlink", "automation"],
+      "author": {
+        "name": "MyBacklinks",
+        "url": "https://mybacklinks.app"
+      }
+    }
+  ]
+}
+

@@ -5,70 +5,81 @@ description: Use MyBacklinks + MCP to let Claude, Cursor, Codex manage your SEO 
 lang: en
 ---
 
-<p align="center">
-  <strong>🌐 Language / 语言</strong><br>
-  <a href="./">English</a> | <a href="./zh">中文</a>
-</p>
+<div class="hero">
+  <div class="container">
+    <p align="center" style="margin-bottom: 2rem;">
+      <span class="badge">🌐 <a href="./" style="color: inherit; text-decoration: none;">English</a> | <a href="./zh" style="color: inherit; text-decoration: none;">中文</a></span>
+    </p>
+    <h1>Automate Backlink SEO<br>with AI Agents</h1>
+    <p>Connect Claude, Cursor, and Codex to your SEO data using the Model Context Protocol (MCP).</p>
+    <div class="hero-actions">
+      <a href="#quick-start" class="btn btn-primary">Get Started</a>
+      <a href="https://github.com/hekmon8/mybacklinks-tools" class="btn btn-secondary">View on GitHub</a>
+    </div>
+  </div>
+</div>
 
-# Automate Backlink Management with AI Agents
+<div class="container content-wrapper">
 
-> As an indie hacker, are you tired of managing backlinks manually? Let AI automate it for you.
+<div class="text-center" style="margin-bottom: 4rem;">
+  <h2>The Missing Link in SEO</h2>
+  <p style="max-width: 600px; margin: 0 auto; color: var(--text-muted);">
+    Manual backlink management is tedious, scattered, and hard to track. MyBacklinks + MCP brings your SEO data directly into your favorite AI coding tools.
+  </p>
+</div>
 
-## The Pain of Backlink Management
+<div class="feature-grid">
+  <div class="feature-card">
+    <div class="feature-icon">🔐</div>
+    <h3>Secure OAuth 2.0</h3>
+    <p>Enterprise-grade security with dynamic client registration and PKCE flow. Your data is safe.</p>
+  </div>
+  <div class="feature-card">
+    <div class="feature-icon">🚀</div>
+    <h3>Zero-Config</h3>
+    <p>Just add the URL. No complex API keys or manual setup required for supported clients.</p>
+  </div>
+  <div class="feature-card">
+    <div class="feature-icon">🤖</div>
+    <h3>Agent Ready</h3>
+    <p>Built for Claude, Cursor, and Codex. Let AI analyze opportunities and manage submissions.</p>
+  </div>
+</div>
 
-Every indie hacker and side project builder knows that SEO is crucial for product promotion. Backlinks, as one of the core SEO factors, directly impact your website's search rankings.
+<div style="margin-top: 4rem;">
 
-However, backlink management is tedious work:
+## What is MCP?
 
-- 📋 **Hard to track** - Which sites did you submit to? What's the status? Difficult to keep track
-- ⏰ **Time-consuming** - Manual submissions across platforms, repetitive work
-- 📊 **Hard to evaluate** - Which backlinks are effective? What's the DR? No unified view
-- 🔄 **Multi-project chaos** - Managing multiple projects makes it even messier
+**Model Context Protocol (MCP)** is an open standard that enables AI assistants to securely connect to external tools. The MyBacklinks MCP server lets your AI assistant:
+1. **Read** your project and backlink data
+2. **Analyze** SEO performance metrics
+3. **Execute** backlink submissions and updates
 
-## The Solution: MyBacklinks + AI Agent
+---
 
-[MyBacklinks](https://mybacklinks.app) is a backlink management platform designed for indie hackers. Through the MCP (Model Context Protocol), you can let AI assistants directly manage your backlink data.
+<h2 id="quick-start">Quick Start</h2>
 
-### What is MCP?
+### 1. Choose Your Client
 
-MCP (Model Context Protocol) is an open standard developed by Anthropic that allows AI assistants to securely connect to external data sources and tools. The MyBacklinks MCP server implements this protocol using OAuth 2.0 with dynamic client registration for secure authentication.
+| Client | Transport | Auth |
+|--------|-----------|------|
+| **Claude Code** | HTTP | ✅ Built-in |
+| **Cursor** | HTTP | ✅ Built-in |
+| **OpenAI Codex** | HTTP | ✅ Built-in |
 
-### Key Features
+### 2. Configure
 
-- 🔐 **Secure OAuth 2.0 Authentication** - Dynamic client registration with PKCE flow
-- 🚀 **Zero-Config Setup** - Just add the URL, authentication is automatic
-- 🛠️ **9 Powerful Tools** - Manage projects, links, resources, and analytics
-- 🔄 **Auto Token Refresh** - Seamless session management
-- 🎯 **Multiple AI Platforms** - Claude Code, Cursor, Codex, and more
+Simply add the MCP server URL: `https://mybacklinks.app/mcp`
 
-## Quick Start
-
-### Supported AI Clients
-
-| Client | Transport | OAuth Auth |
-|--------|-----------|------------|
-| Claude Code | Streamable HTTP | ✅ Built-in |
-| Cursor | Streamable HTTP | ✅ Built-in |
-| OpenAI Codex | Streamable HTTP | ✅ Built-in |
-| Kelivo (Mobile) | Streamable HTTP | ✅ Built-in |
-
-### Configuration
-
-Simply add the MCP server URL to your client's configuration:
-
-#### Claude Code Configuration
-
-**Option 1: CLI (Recommended)**
+#### For Claude Code (CLI)
 
 ```bash
-# Add globally (available in all projects)
 claude mcp add --transport http --scope user mybacklinks https://mybacklinks.app/mcp
-
-# Verify
-claude mcp list
 ```
 
-**Option 2: Config File** (`~/.claude/claude_desktop_config.json`):
+#### For Cursor
+
+Add to `.cursor/mcp.json`:
 
 ```json
 {
@@ -80,131 +91,55 @@ claude mcp list
 }
 ```
 
-#### Cursor Configuration
+### 3. Authenticate
 
-Create `.cursor/mcp.json` in your project root:
-
-```json
-{
-  "mcpServers": {
-    "mybacklinks": {
-      "url": "https://mybacklinks.app/mcp"
-    }
-  }
-}
-```
-
-#### OpenAI Codex Configuration
-
-```bash
-codex mcp add mybacklinks --url https://mybacklinks.app/mcp
-```
-
-### First-Time Authentication
-
-When you first connect, your AI client will automatically:
-
-1. 🔍 Discover OAuth metadata from `/.well-known/oauth-authorization-server`
-2. 📝 Register as a dynamic client (RFC 7591)
-3. 🌐 Open your browser for login
-4. 🔐 Store tokens securely for future requests
-
-**No manual setup required** — just configure the URL and start using it!
-
-## Available MCP Tools
-
-Once connected, these 9 tools are available to your AI assistant:
-
-| Tool Name | Description |
-|-----------|-------------|
-| `listProjects` | List all projects with metadata |
-| `getProjectDetail` | Get detailed project info |
-| `listProjectBacklinks` | List all backlinks for a project |
-| `getProjectBacklinkDetail` | Get specific backlink details |
-| `upsertProjectBacklink` | Create or update backlink records |
-| `listBacklinkResources` | List available backlink resource sites |
-| `listAvailableResources` | List resources not yet used for a project |
-| `addBacklinkResource` | Add a new backlink resource to your database |
-| `getProjectAnalytics` | Get project SEO analytics (GSC clicks/impressions/CTR, GA4 traffic, domain DR, backlink stats) |
-
-## Use Cases
-
-### Use Case 1: Daily SEO Workflow
-
-```
-> Generate a status report of all my projects with their backlink counts
-```
-
-### Use Case 2: Backlink Auditing
-
-```
-> Check all pending links for my SaaS project and list which need attention
-```
-
-### Use Case 3: Finding Opportunities
-
-```
-> Find websites with DR between 40-60 where I can submit guest posts
-```
-
-### Use Case 4: Bulk Operations
-
-```
-> Add these backlinks to my project:
-> 1. https://reddit.com/r/startups/my-post - anchor: "startup tools"
-> 2. https://hackernews.com/item/123 - anchor: "new SaaS tool"
-```
-
-### Use Case 5: Adding New Resources
-
-```
-> Add a new backlink resource: domain "indiehackers.com", type "forum", free, DR 70
-```
-
-## API Rate Limits
-
-The MyBacklinks MCP respects these rate limits based on your subscription:
-
-- **Free Tier**: 100 requests/hour
-- **Pro Tier**: 1,000 requests/hour
-- **Enterprise**: Custom limits
-
-## Best Practices
-
-1. **Use Pagination** - For large datasets, use `cursor` and `limit` parameters
-2. **Select Fields** - Use the `fields` parameter in `listProjectBacklinks` to reduce response size
-3. **Batch Operations** - Group related link updates in a single conversation
-4. **Check Status** - Verify link status before taking action
-
-## 📖 Full Documentation
-
-Want to learn more about MCP tools, OAuth architecture, and troubleshooting?
-
-👉 **[Read the Complete Tutorial](https://mybacklinks.app/blog/mcp-client-tutorial)**
-
-The full tutorial includes:
-- Detailed parameter documentation for each tool
-- OAuth 2.0 architecture and security features
-- Troubleshooting guide
-- More usage examples
-
-## Get Started
-
-1. **Sign up**: [mybacklinks.app](https://mybacklinks.app)
-2. **Configure MCP**: Follow the guide above to configure your AI client
-3. **Start chatting**: Manage your backlinks with natural language
+When you first use a tool, the client will prompt you to log in via your browser. Once authenticated, the token is stored securely.
 
 ---
 
-## Resources
+## 🛠️ Available Tools
 
-- 📖 [Full MCP Tutorial](https://mybacklinks.app/blog/mcp-client-tutorial)
-- 📂 [Configuration Examples](https://github.com/hekmon8/mybacklinks-tools)
-- 🐛 [Report Issues](https://github.com/hekmon8/mybacklinks-tools/issues)
-- 📧 Contact us: support@mybacklinks.app
+Your AI agent gains access to **9 powerful tools**:
+
+| Tool | Function |
+|------|----------|
+| `listProjects` | View all SEO projects |
+| `getProjectAnalytics` | Get GSC clicks, impressions, and DR stats |
+| `listProjectBacklinks` | Track submissions and statuses |
+| `upsertProjectBacklink` | Add or update backlink records |
+| `listBacklinkResources` | Find new submission opportunities |
+| ...and more | Full CRUD capabilities |
 
 ---
 
-<p align="center">
-  <a href="https://mybacklinks.app">MyBacklinks</a> - Backlink management platform for indie hackers
-</p>
+## 💡 Use Cases
+
+<div class="feature-grid">
+  <div class="feature-card">
+    <h3>📊 Daily Reports</h3>
+    <p><em>"Generate a status report of all my projects with their backlink counts and recent growth."</em></p>
+  </div>
+  <div class="feature-card">
+    <h3>🔍 Audit & Fix</h3>
+    <p><em>"Check all pending links for my SaaS project and tell me which ones need manual verification."</em></p>
+  </div>
+  <div class="feature-card">
+    <h3>🎯 Opportunity Finder</h3>
+    <p><em>"Find websites with DR 40-60 where I can submit a guest post for my AI tool."</em></p>
+  </div>
+  <div class="feature-card">
+    <h3>⚡ Bulk Import</h3>
+    <p><em>"Add these 5 Reddit threads as backlinks to my 'Launch' project."</em></p>
+  </div>
+</div>
+
+---
+
+## Resources & Support
+
+- 📖 **[Read the Full Tutorial](https://mybacklinks.app/blog/mcp-client-tutorial)** - Deep dive into parameters and architecture.
+- 📂 **[Configuration Examples](https://github.com/hekmon8/mybacklinks-tools)** - Copy-paste configs.
+- 📧 **Support** - support@mybacklinks.app
+
+</div>
+</div>

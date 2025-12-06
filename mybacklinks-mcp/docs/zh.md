@@ -6,70 +6,81 @@ permalink: /zh/
 lang: zh-CN
 ---
 
-<p align="center">
-  <strong>🌐 Language / 语言</strong><br>
-  <a href="../">English</a> | <a href="./">中文</a>
-</p>
+<div class="hero">
+  <div class="container">
+    <p align="center" style="margin-bottom: 2rem;">
+      <span class="badge">🌐 <a href="../" style="color: inherit; text-decoration: none;">English</a> | <a href="./" style="color: inherit; text-decoration: none;">中文</a></span>
+    </p>
+    <h1>用 AI Agent 自动化<br>SEO 外链管理</h1>
+    <p>通过 Model Context Protocol (MCP) 将 Claude、Cursor 和 Codex 连接到你的 SEO 数据。</p>
+    <div class="hero-actions">
+      <a href="#quick-start" class="btn btn-primary">开始使用</a>
+      <a href="https://github.com/hekmon8/mybacklinks-tools" class="btn btn-secondary">GitHub 项目</a>
+    </div>
+  </div>
+</div>
 
-# 如何用 AI Agent 自动化管理和提交外链
+<div class="container content-wrapper">
 
-> 作为独立开发者，你是否厌倦了手动管理外链？让 AI 来帮你自动化这一切。
+<div class="text-center" style="margin-bottom: 4rem;">
+  <h2>SEO 缺失的一环</h2>
+  <p style="max-width: 600px; margin: 0 auto; color: var(--text-muted);">
+    手动管理外链既繁琐又分散，难以追踪。MyBacklinks + MCP 将你的 SEO 数据直接带入你最喜欢的 AI 编程工具中。
+  </p>
+</div>
 
-## 外链管理的痛点
+<div class="feature-grid">
+  <div class="feature-card">
+    <div class="feature-icon">🔐</div>
+    <h3>安全 OAuth 2.0</h3>
+    <p>企业级安全性，采用动态客户端注册和 PKCE 流程。数据绝对安全。</p>
+  </div>
+  <div class="feature-card">
+    <div class="feature-icon">🚀</div>
+    <h3>零配置</h3>
+    <p>只需添加 URL。支持的客户端无需复杂的 API 密钥或手动设置。</p>
+  </div>
+  <div class="feature-card">
+    <div class="feature-icon">🤖</div>
+    <h3>Agent Ready</h3>
+    <p>专为 Claude、Cursor 和 Codex 构建。让 AI 分析机会并管理提交。</p>
+  </div>
+</div>
 
-每个独立开发者和 Side Project 创建者都知道，SEO 是产品推广的重要一环。而外链（Backlinks）作为 SEO 的核心因素之一，直接影响你网站的搜索排名。
+<div style="margin-top: 4rem;">
 
-然而，外链管理是一项繁琐的工作：
+## 什么是 MCP？
 
-- 📋 **记录追踪难** - 提交了哪些网站？状态如何？很难追踪
-- ⏰ **耗时费力** - 手动在各个平台提交，重复性劳动
-- 📊 **效果难评估** - 哪些外链有效？DR 多少？缺乏统一视图
-- 🔄 **多项目管理** - 有多个项目时，管理更加混乱
+**Model Context Protocol (MCP)** 是一个开放标准，允许 AI 助手安全地连接到外部工具。MyBacklinks MCP 服务器让你的 AI 助手能够：
+1. **读取** 你的项目和外链数据
+2. **分析** SEO 性能指标
+3. **执行** 外链提交和更新
 
-## 解决方案：MyBacklinks + AI Agent
+---
 
-[MyBacklinks](https://mybacklinks.app) 是专为独立开发者设计的外链管理平台。通过 MCP（Model Context Protocol）协议，你可以让 AI 助手直接管理你的外链数据。
+<h2 id="quick-start">快速开始</h2>
 
-### 什么是 MCP？
+### 1. 选择客户端
 
-MCP（Model Context Protocol）是 Anthropic 开发的开放协议，允许 AI 助手安全地连接到外部数据源和工具。MyBacklinks MCP 服务器实现了这个协议，使用 OAuth 2.0 动态客户端注册进行安全认证。
+| 客户端 | 传输协议 | 认证 |
+|--------|----------|------|
+| **Claude Code** | HTTP | ✅ 内置 |
+| **Cursor** | HTTP | ✅ 内置 |
+| **OpenAI Codex** | HTTP | ✅ 内置 |
 
-### 核心功能
+### 2. 配置
 
-- 🔐 **安全的 OAuth 2.0 认证** - 动态客户端注册 + PKCE 流程
-- 🚀 **零配置设置** - 只需添加 URL，认证自动完成
-- 🛠️ **9 个强大工具** - 管理项目、外链、资源和分析数据
-- 🔄 **自动刷新 Token** - 无缝会话管理
-- 🎯 **多平台支持** - Claude Code、Cursor、Codex 等
+只需添加 MCP 服务器 URL：`https://mybacklinks.app/mcp`
 
-## 快速开始
-
-### 支持的 AI 客户端
-
-| 客户端 | 传输协议 | OAuth |
-|--------|----------|-------|
-| Claude Code | Streamable HTTP | ✅ 内置 |
-| Cursor | Streamable HTTP | ✅ 内置 |
-| OpenAI Codex | Streamable HTTP | ✅ 内置 |
-| Kelivo（移动端）| Streamable HTTP | ✅ 内置 |
-
-### 配置方法
-
-只需将 MCP 服务器 URL 添加到客户端配置中：
-
-#### Claude Code 配置
-
-**方式一：命令行（推荐）**
+#### Claude Code (CLI)
 
 ```bash
-# 全局添加（所有项目可用）
 claude mcp add --transport http --scope user mybacklinks https://mybacklinks.app/mcp
-
-# 验证
-claude mcp list
 ```
 
-**方式二：配置文件** (`~/.claude/claude_desktop_config.json`)：
+#### Cursor
+
+在 `.cursor/mcp.json` 中添加：
 
 ```json
 {
@@ -81,132 +92,55 @@ claude mcp list
 }
 ```
 
-#### Cursor 配置
+### 3. 认证
 
-在项目根目录创建 `.cursor/mcp.json`：
-
-```json
-{
-  "mcpServers": {
-    "mybacklinks": {
-      "url": "https://mybacklinks.app/mcp"
-    }
-  }
-}
-```
-
-#### OpenAI Codex 配置
-
-```bash
-codex mcp add mybacklinks --url https://mybacklinks.app/mcp
-```
-
-### 首次认证
-
-首次连接时，AI 客户端会自动：
-
-1. 🔍 从 `/.well-known/oauth-authorization-server` 发现 OAuth 元数据
-2. 📝 注册为动态客户端 (RFC 7591)
-3. 🌐 打开浏览器让你登录
-4. 🔐 安全存储 token 供后续使用
-
-**无需手动配置** —— 只需添加 URL 即可开始使用！
-
-## 可用的 MCP 工具
-
-连接后，AI 助手可以使用以下 9 个工具：
-
-| 工具名称 | 功能描述 |
-|----------|----------|
-| `listProjects` | 列出所有项目及元数据 |
-| `getProjectDetail` | 获取项目详细信息 |
-| `listProjectBacklinks` | 列出项目的所有外链 |
-| `getProjectBacklinkDetail` | 获取特定外链的详细信息 |
-| `upsertProjectBacklink` | 创建或更新外链记录 |
-| `listBacklinkResources` | 列出可用的外链资源站点 |
-| `listAvailableResources` | 列出项目尚未使用的资源 |
-| `addBacklinkResource` | 添加新的外链资源到数据库 |
-| `getProjectAnalytics` | 获取项目分析数据（GSC 点击/展示/CTR、GA4 流量、域名 DR、外链统计） |
-
-## 实战场景
-
-### 场景一：每日 SEO 工作流
-
-```
-> 生成我所有项目的状态报告，包含外链数量统计
-```
-
-### 场景二：外链审计
-
-```
-> 检查我 SaaS 项目的所有 pending 状态外链，列出需要关注的
-```
-
-### 场景三：发现提交机会
-
-```
-> 找一些 DR 在 40-60 之间可以投稿的网站
-```
-
-### 场景四：批量操作
-
-```
-> 把这些外链添加到我的项目：
-> 1. https://reddit.com/r/startups/my-post - 锚文本: "startup tools"
-> 2. https://hackernews.com/item/123 - 锚文本: "new SaaS tool"
-```
-
-### 场景五：添加新资源
-
-```
-> 添加新的外链资源：域名 "indiehackers.com"，类型 "forum"，免费，DR 70
-```
-
-## API 速率限制
-
-MyBacklinks MCP 根据订阅等级有不同的速率限制：
-
-- **免费版**: 100 请求/小时
-- **Pro 版**: 1,000 请求/小时
-- **企业版**: 自定义限制
-
-## 最佳实践
-
-1. **使用分页** - 对于大数据集，使用 `cursor` 和 `limit` 参数
-2. **选择字段** - 在 `listProjectBacklinks` 中使用 `fields` 参数减少响应大小
-3. **批量操作** - 在一次对话中组合相关的链接更新
-4. **检查状态** - 操作前先验证链接状态
-
-## 📖 详细文档
-
-想了解更多 MCP 工具的详细用法、OAuth 架构和故障排除？
-
-👉 **[查看完整教程](https://mybacklinks.app/blog/mcp-client-tutorial)**
-
-完整教程包含：
-- 每个工具的详细参数说明
-- OAuth 2.0 架构和安全特性
-- 故障排除指南
-- 更多使用示例
-
-## 开始使用
-
-1. **注册账号**: [mybacklinks.app](https://mybacklinks.app)
-2. **配置 MCP**: 按照上面的指南配置你的 AI 客户端
-3. **开始对话**: 用自然语言管理你的外链
+首次使用工具时，客户端会提示你通过浏览器登录。认证后，Token 将被安全存储。
 
 ---
 
-## 相关资源
+## 🛠️ 可用工具
 
-- 📖 [MCP 完整教程](https://mybacklinks.app/blog/mcp-client-tutorial)
-- 📂 [配置示例](https://github.com/hekmon8/mybacklinks-tools)
-- 🐛 [问题反馈](https://github.com/hekmon8/mybacklinks-tools/issues)
-- 📧 联系我们: support@mybacklinks.app
+你的 AI Agent 将获得 **9 个强大工具** 的使用权：
+
+| 工具 | 功能 |
+|------|------|
+| `listProjects` | 查看所有 SEO 项目 |
+| `getProjectAnalytics` | 获取 GSC 点击、展示和 DR 统计 |
+| `listProjectBacklinks` | 追踪提交和状态 |
+| `upsertProjectBacklink` | 添加或更新外链记录 |
+| `listBacklinkResources` | 发现新的提交机会 |
+| ...以及更多 | 完整的增删改查能力 |
 
 ---
 
-<p align="center">
-  <a href="https://mybacklinks.app">MyBacklinks</a> - 为独立开发者打造的外链管理平台
-</p>
+## 💡 实战场景
 
+<div class="feature-grid">
+  <div class="feature-card">
+    <h3>📊 每日报告</h3>
+    <p><em>"生成我所有项目的状态报告，包含外链数量统计和近期增长。"</em></p>
+  </div>
+  <div class="feature-card">
+    <h3>🔍 审计与修复</h3>
+    <p><em>"检查我 SaaS 项目的所有 pending 状态外链，告诉我哪些需要手动验证。"</em></p>
+  </div>
+  <div class="feature-card">
+    <h3>🎯 发现机会</h3>
+    <p><em>"找一些 DR 在 40-60 之间可以为我的 AI 工具投稿的网站。"</em></p>
+  </div>
+  <div class="feature-card">
+    <h3>⚡ 批量导入</h3>
+    <p><em>"把这 5 个 Reddit 帖子作为外链添加到我的 'Launch' 项目中。"</em></p>
+  </div>
+</div>
+
+---
+
+## 资源与支持
+
+- 📖 **[阅读完整教程](https://mybacklinks.app/blog/mcp-client-tutorial)** - 深入了解参数和架构。
+- 📂 **[配置示例](https://github.com/hekmon8/mybacklinks-tools)** - 复制粘贴配置。
+- 📧 **支持** - support@mybacklinks.app
+
+</div>
+</div>

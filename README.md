@@ -13,6 +13,7 @@ This directory contains open source packages from [MyBacklinks](https://mybackli
 | Package | Description |
 |---------|-------------|
 | [mybacklinks-mcp](./mybacklinks-mcp) | MCP server for AI assistants to manage backlinks |
+| [backlink-submission-skill](./backlink-submission-skill) | Claude Skill for automated backlink submission |
 
 ### About MyBacklinks
 
@@ -72,6 +73,7 @@ All packages are released under the MIT License.
 | 软件包 | 描述 |
 |--------|------|
 | [mybacklinks-mcp](./mybacklinks-mcp) | 用于 AI 助手管理外链的 MCP 服务器 |
+| [backlink-submission-skill](./backlink-submission-skill) | 用于自动化外链提交的 Claude Skill |
 
 ### 关于 MyBacklinks
 
