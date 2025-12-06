@@ -17,9 +17,7 @@
     <header class="site-header">
       <div class="container header-inner">
         <a href="{{ "/" | relative_url }}" class="site-title">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M13 2L3 14H12L11 22L21 10H12L13 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
+          <span class="logo-icon">⚡️</span>
           {{ site.title | default: "MyBacklinks MCP" }}
         </a>
         <nav class="nav-links">
@@ -29,17 +27,45 @@
       </div>
     </header>
 
-    <main>
-      {{ content }}
+    {% if page.show_hero %}
+    <section class="hero-section">
+      <div class="container">
+        <div class="hero-content">
+          <p class="hero-badge">
+            <a href="{{ "/" | relative_url }}" class="{% if page.lang != 'zh-CN' %}active{% endif %}">English</a>
+            <span class="divider">|</span>
+            <a href="{{ "/zh" | relative_url }}" class="{% if page.lang == 'zh-CN' %}active{% endif %}">中文</a>
+          </p>
+          <h1 class="hero-title">{{ page.title }}</h1>
+          <p class="hero-subtitle">{{ page.description }}</p>
+          <div class="hero-actions">
+            <a href="#quick-start" class="btn btn-primary">
+              {% if page.lang == 'zh-CN' %}快速开始{% else %}Get Started{% endif %}
+            </a>
+            <a href="https://github.com/hekmon8/mybacklinks-tools" class="btn btn-secondary">GitHub</a>
+          </div>
+        </div>
+      </div>
+    </section>
+    {% endif %}
+
+    <main class="page-content">
+      <div class="container">
+        {% unless page.show_hero %}
+          <h1>{{ page.title }}</h1>
+        {% endunless %}
+        
+        {{ content }}
+      </div>
     </main>
 
     <footer class="site-footer">
       <div class="container">
         <p>
-          Built with ❤️ for Indie Hackers using <a href="https://modelcontextprotocol.io" target="_blank">MCP</a>
+          Built for Indie Hackers with <a href="https://modelcontextprotocol.io" target="_blank">MCP</a>
         </p>
-        <p>
-          <small>&copy; {{ "now" | date: "%Y" }} MyBacklinks. All rights reserved.</small>
+        <p class="copyright">
+          &copy; {{ "now" | date: "%Y" }} MyBacklinks. All rights reserved.
         </p>
       </div>
     </footer>
