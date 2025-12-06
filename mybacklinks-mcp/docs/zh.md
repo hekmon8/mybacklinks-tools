@@ -126,7 +126,7 @@ codex mcp add mybacklinks --url https://mybacklinks.app/mcp
 | `listBacklinkResources` | 列出可用的外链资源站点 |
 | `listAvailableResources` | 列出项目尚未使用的资源 |
 | `addBacklinkResource` | 添加新的外链资源到数据库 |
-| `getProjectAnalytics` | 获取项目 SEO 分析数据 |
+| `getProjectAnalytics` | 获取项目分析数据（GSC 点击/展示/CTR、GA4 流量、域名 DR、外链统计） |
 
 ## 实战场景
 

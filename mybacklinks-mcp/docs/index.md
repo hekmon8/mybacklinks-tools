@@ -125,7 +125,7 @@ Once connected, these 9 tools are available to your AI assistant:
 | `listBacklinkResources` | List available backlink resource sites |
 | `listAvailableResources` | List resources not yet used for a project |
 | `addBacklinkResource` | Add a new backlink resource to your database |
-| `getProjectAnalytics` | Get project SEO analytics |
+| `getProjectAnalytics` | Get project SEO analytics (GSC clicks/impressions/CTR, GA4 traffic, domain DR, backlink stats) |
 
 ## Use Cases
 
