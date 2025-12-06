@@ -1,0 +1,7 @@
+# OpenAI Codex CLI MCP configuration
+# Copy to ~/.codex/mcp.toml
+
+[[mcp_servers]]
+name = "mybacklinks"
+url = "https://mybacklinks.app/mcp"
+

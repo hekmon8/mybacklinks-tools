@@ -1,0 +1,65 @@
+# GitHub Pages Configuration
+title: MyBacklinks MCP Guide
+description: 使用 AI Agent 自动化管理和提交外链 | Automate backlink management with AI Agents
+
+# GitHub Pages (github.io domain for SEO authority)
+url: "https://hekmon8.github.io"
+baseurl: "/mybacklinks-tools"
+
+# Theme
+remote_theme: pages-themes/cayman@v0.2.0
+plugins:
+  - jekyll-remote-theme
+  - jekyll-seo-tag
+
+# Author info
+author:
+  name: MyBacklinks Team
+  email: support@mybacklinks.app
+
+# Social
+github_username: hekmon8
+twitter_username: mybacklinks
+
+# Build settings
+markdown: kramdown
+highlighter: rouge
+
+# Kramdown options
+kramdown:
+  input: GFM
+  syntax_highlighter: rouge
+  syntax_highlighter_opts:
+    block:
+      line_numbers: false
+
+# SEO
+lang: zh-CN
+google_analytics: 
+
+# Collections
+collections:
+  posts:
+    output: true
+    permalink: /blog/:slug/
+
+# Defaults
+defaults:
+  - scope:
+      path: ""
+      type: "pages"
+    values:
+      layout: "default"
+  - scope:
+      path: ""
+      type: "posts"
+    values:
+      layout: "post"
+
+# Exclude files
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - node_modules
+  - vendor
+
