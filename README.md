@@ -57,6 +57,7 @@ All packages are released under the MIT License.
 
 - 🌐 [MyBacklinks Website](https://mybacklinks.app)
 - 📚 [Documentation](https://docs.mybacklinks.app)
+- 📖 [MCP Setup Guide](https://hekmon8.github.io/mybacklinks-tools) - GitHub Pages
 - 🐛 [Report Issues](https://github.com/hekmon8/mybacklinks-tools/issues)
 - 💬 [Discussions](https://github.com/hekmon8/mybacklinks-tools/discussions)
 
@@ -115,6 +116,7 @@ npm run build
 
 - 🌐 [MyBacklinks 网站](https://mybacklinks.app)
 - 📚 [文档](https://docs.mybacklinks.app)
+- 📖 [MCP 设置指南](https://hekmon8.github.io/mybacklinks-tools) - GitHub Pages
 - 🐛 [报告问题](https://github.com/hekmon8/mybacklinks-tools/issues)
 - 💬 [讨论区](https://github.com/hekmon8/mybacklinks-tools/discussions)
 
