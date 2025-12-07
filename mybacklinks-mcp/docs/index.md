@@ -70,13 +70,18 @@ When you first use a tool, the client will prompt you to log in via your browser
 
 ## Available Tools
 
-Your AI Agent gains access to **9 powerful tools**:
+Your AI Agent gains access to **11 powerful tools**:
 
+### Project Management
 *   `listProjects`: View all SEO projects.
 *   `getProjectAnalytics`: Get GSC clicks, impressions, and DR stats.
 *   `listProjectBacklinks`: Track submissions and statuses.
 *   `upsertProjectBacklink`: Add or update backlink records.
 *   `listBacklinkResources`: Find new submission opportunities.
+
+### Domain Research (Credits Required)
+*   `getDomainMetrics`: Query SEO metrics for any domain - DR, traffic, backlinks count, organic keywords, referring domains, and more. Data source: RapidAPI SEO metrics. **Cost: 1 credit**
+*   `discoverDomainBacklinks`: Discover backlinks for any domain. Returns source URL, anchor text, DR, dofollow status, etc. Supports filtering by dofollow, minimum DR, and anchor text. Data source: DataForSEO Backlinks API. **Cost: 10 credits**
 
 ---
 
@@ -93,6 +98,12 @@ Your AI Agent gains access to **9 powerful tools**:
 
 ### ⚡ Bulk Import
 > "Add these 5 Reddit threads as backlinks to my 'Launch' project."
+
+### 🔬 Competitor Analysis
+> "Get the DR and backlink stats for competitor.com to understand their SEO strength."
+
+### 🔗 Backlink Discovery
+> "Find all dofollow backlinks with DR > 50 pointing to example.com."
 
 ---
 

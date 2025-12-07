@@ -71,13 +71,18 @@ claude mcp add --transport http --scope user mybacklinks https://mybacklinks.app
 
 ## 可用工具
 
-你的 AI Agent 将获得 **9 个强大工具** 的使用权：
+你的 AI Agent 将获得 **11 个强大工具** 的使用权：
 
+### 项目管理
 *   `listProjects`：查看所有 SEO 项目。
 *   `getProjectAnalytics`：获取 GSC 点击、展示和 DR 统计。
 *   `listProjectBacklinks`：追踪提交和状态。
 *   `upsertProjectBacklink`：添加或更新外链记录。
 *   `listBacklinkResources`：发现新的提交机会。
+
+### 域名研究（需消耗积分）
+*   `getDomainMetrics`：查询任意域名的 SEO 指标 - DR、流量、外链数量、有机关键词、引用域数等。数据来源：RapidAPI SEO 指标。**消耗：1 积分**
+*   `discoverDomainBacklinks`：发现任意域名的外链列表。返回来源 URL、锚文本、DR、dofollow 状态等。支持按 dofollow、最小 DR、锚文本筛选。数据来源：DataForSEO Backlinks API。**消耗：10 积分**
 
 ---
 
@@ -94,6 +99,12 @@ claude mcp add --transport http --scope user mybacklinks https://mybacklinks.app
 
 ### ⚡ 批量导入
 > "把这 5 个 Reddit 帖子作为外链添加到我的 'Launch' 项目中。"
+
+### 🔬 竞品分析
+> "获取 competitor.com 的 DR 和外链统计数据，了解他们的 SEO 实力。"
+
+### 🔗 外链发现
+> "找出所有指向 example.com 的 DR > 50 的 dofollow 外链。"
 
 ---
 
