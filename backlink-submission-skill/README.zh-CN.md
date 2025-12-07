@@ -15,11 +15,11 @@
 ### 从 GitHub 安装（推荐）
 
 ```bash
-# 先添加 marketplace（仅需一次）
-claude plugin marketplace add mybacklinks hekmon8/mybacklinks-tools
+# 先添加 marketplace（仅需一次，需要仓库根目录有 .claude-plugin/marketplace.json）
+claude plugin marketplace add hekmon8/mybacklinks-tools
 
 # 安装 skill
-claude plugin install backlink-submission-skill@mybacklinks
+claude plugin install backlink-submission-skill
 ```
 
 ### 手动安装

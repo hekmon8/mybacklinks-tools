@@ -15,11 +15,11 @@ Automate backlink submission workflow using MyBacklinks MCP and browser automati
 ### From GitHub (Recommended)
 
 ```bash
-# Add the marketplace using owner/repo format
-claude plugin marketplace add mybacklinks hekmon8/mybacklinks-tools
+# Add the marketplace (requires .claude-plugin/marketplace.json at repo root)
+claude plugin marketplace add hekmon8/mybacklinks-tools
 
 # Install the skill
-claude plugin install backlink-submission-skill@mybacklinks
+claude plugin install backlink-submission-skill
 ```
 
 ### From Local Path
@@ -27,14 +27,14 @@ claude plugin install backlink-submission-skill@mybacklinks
 If you have the repository cloned locally:
 
 ```bash
-# Navigate to the project root
+# Navigate to the marketplace directory
 cd /path/to/mybacklinks-tools
 
-# Add local marketplace
-claude plugin marketplace add mybacklinks ./packages/opensource
+# Add local marketplace (directory must contain .claude-plugin/marketplace.json)
+claude plugin marketplace add ./packages/opensource
 
 # Install the skill
-claude plugin install backlink-submission-skill@mybacklinks
+claude plugin install backlink-submission-skill
 ```
 
 ### Manual Installation

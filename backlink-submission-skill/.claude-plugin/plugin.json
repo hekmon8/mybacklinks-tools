@@ -1,0 +1,10 @@
+{
+  "name": "backlink-submission-skill",
+  "version": "1.0.0",
+  "description": "Automate backlink submission workflow using MyBacklinks MCP and browser automation",
+  "author": {
+    "name": "MyBacklinks",
+    "url": "https://mybacklinks.app"
+  }
+}
+
