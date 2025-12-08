@@ -33,6 +33,7 @@ When connected, your AI assistant can use these MCP tools:
 | `listLinkResources` | Discover potential backlink resources |
 | `listAvailableResources` | List resources not yet used for a project |
 | `addBacklinkResource` | Add a new backlink resource (rejects duplicate domains) |
+| `updateBacklinkResource` | Update an existing backlink resource (submission URL, type, DR, notes, etc.) |
 | `getProjectAnalytics` | Get SEO analytics for your project |
 
 ## Quick Start
@@ -155,6 +156,12 @@ The assistant will use `listLinkResources` with DR filters.
 > "Add indiehackers.com as a forum-type backlink resource with DR 70"
 
 The assistant will use `addBacklinkResource` to add the resource. It will reject if the domain already exists.
+
+### Update Backlink Resources
+
+> "Update the indiehackers.com resource with new submission instructions: Go to /new, fill the form, and click Post"
+
+The assistant will use `updateBacklinkResource` to update the resource's `howToSubmit` field.
 
 ## API Endpoints
 

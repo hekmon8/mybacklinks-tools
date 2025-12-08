@@ -33,6 +33,7 @@ MyBacklinks 是一个为独立开发者和 Side Project 创建者设计的外链
 | `listLinkResources` | 发现潜在的外链资源 |
 | `listAvailableResources` | 列出项目尚未使用的资源 |
 | `addBacklinkResource` | 新增外链资源（域名重复时拒绝） |
+| `updateBacklinkResource` | 更新已有外链资源（提交 URL、类型、DR、备注等） |
 | `getProjectAnalytics` | 获取项目的 SEO 分析数据 |
 
 ## 快速开始
@@ -155,6 +156,12 @@ codex mcp list
 > "添加 indiehackers.com 作为论坛类型的外链资源，DR 70"
 
 助手会使用 `addBacklinkResource` 添加资源。如果域名已存在会拒绝添加。
+
+### 更新外链资源
+
+> "更新 indiehackers.com 资源的提交说明：前往 /new 页面，填写表单，然后点击 Post"
+
+助手会使用 `updateBacklinkResource` 更新资源的 `howToSubmit` 字段。
 
 ## API 端点
 

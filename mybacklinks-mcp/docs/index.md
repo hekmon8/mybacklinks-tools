@@ -70,7 +70,7 @@ When you first use a tool, the client will prompt you to log in via your browser
 
 ## Available Tools
 
-Your AI Agent gains access to **11 powerful tools**:
+Your AI Agent gains access to **12 powerful tools**:
 
 ### Project Management
 *   `listProjects`: View all SEO projects.
@@ -78,6 +78,7 @@ Your AI Agent gains access to **11 powerful tools**:
 *   `listProjectBacklinks`: Track submissions and statuses.
 *   `upsertProjectBacklink`: Add or update backlink records.
 *   `listBacklinkResources`: Find new submission opportunities.
+*   `updateBacklinkResource`: Update resource details like submission instructions, DR, or notes.
 
 ### Domain Research (Credits Required)
 *   `getDomainMetrics`: Query SEO metrics for any domain - DR, traffic, backlinks count, organic keywords, referring domains, and more. Data source: RapidAPI SEO metrics. **Cost: 1 credit**

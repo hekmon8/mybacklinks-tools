@@ -1,0 +1,23 @@
+{
+  "name": "mybacklinks",
+  "displayName": "MyBacklinks Tools",
+  "description": "Official plugins and skills for MyBacklinks - backlink management platform",
+  "version": "1.0.0",
+  "author": {
+    "name": "MyBacklinks",
+    "url": "https://mybacklinks.app"
+  },
+  "repository": "https://github.com/hekmon8/mybacklinks-tools",
+  "plugins": [
+    {
+      "name": "backlink-submission-skill",
+      "displayName": "Backlink Submission",
+      "description": "Automate backlink submission workflow using MyBacklinks MCP and browser automation",
+      "version": "1.0.0",
+      "path": "packages/opensource/backlink-submission-skill",
+      "type": "skill",
+      "categories": ["SEO", "Automation", "Marketing"],
+      "keywords": ["SEO", "backlink", "automation", "link-building"]
+    }
+  ]
+}

@@ -71,7 +71,7 @@ claude mcp add --transport http --scope user mybacklinks https://mybacklinks.app
 
 ## 可用工具
 
-你的 AI Agent 将获得 **11 个强大工具** 的使用权：
+你的 AI Agent 将获得 **12 个强大工具** 的使用权：
 
 ### 项目管理
 *   `listProjects`：查看所有 SEO 项目。
@@ -79,6 +79,7 @@ claude mcp add --transport http --scope user mybacklinks https://mybacklinks.app
 *   `listProjectBacklinks`：追踪提交和状态。
 *   `upsertProjectBacklink`：添加或更新外链记录。
 *   `listBacklinkResources`：发现新的提交机会。
+*   `updateBacklinkResource`：更新资源详情，如提交说明、DR 或备注。
 
 ### 域名研究（需消耗积分）
 *   `getDomainMetrics`：查询任意域名的 SEO 指标 - DR、流量、外链数量、有机关键词、引用域数等。数据来源：RapidAPI SEO 指标。**消耗：1 积分**
