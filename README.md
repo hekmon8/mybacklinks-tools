@@ -10,10 +10,51 @@ This directory contains open source packages from [MyBacklinks](https://mybackli
 
 ### Packages
 
-| Package | Description |
-|---------|-------------|
-| [mybacklinks-mcp](./mybacklinks-mcp) | MCP server for AI assistants to manage backlinks |
-| [backlink-submission-skill](./backlink-submission-skill) | Claude Skill for automated backlink submission |
+| Package | Description | Use Case |
+|---------|-------------|----------|
+| [mybacklinks-mcp](./mybacklinks-mcp) | MCP server for AI assistants | Backend API integration |
+| [skills/blog-commenter-skill](./skills/blog-commenter-skill) | Automated blog comment posting | **Blog** backlinks |
+| [skills/backlink-submission-skill](./skills/backlink-submission-skill) | AI + browser automation | **Directory/Forum/Social** backlinks |
+| [commands](./commands) | Unified workflow commands | Orchestration |
+
+### Skill Selection Guide
+
+| Resource Type | Recommended Skill | Method |
+|---------------|------------------|--------|
+| `blog` | **blog-commenter-skill** | Scripts (WordPress, Ghost, Disqus) |
+| `directory` | **backlink-submission-skill** | AI + Browser automation |
+| `forum` | **backlink-submission-skill** | AI + Browser automation |
+| `social` | **backlink-submission-skill** | AI + Browser automation |
+| `other` | **backlink-submission-skill** | AI + Browser automation |
+
+### Quick Start
+
+#### Option 1: Use the Unified Workflow
+
+See [commands/submit-backlinks.md](./commands/submit-backlinks.md) for the complete workflow that automatically routes to the right skill based on resource type.
+
+```
+/submit-backlinks aimcp.info
+/submit-backlinks lovemoney.app blog
+/submit-backlinks myproject.com directory
+```
+
+#### Option 2: Use Skills Directly
+
+**For Blog Comments:**
+```bash
+cd skills/blog-commenter-skill
+node submit-backlink.js \
+  --url "https://blog.example.com/post" \
+  --project "MyProject" \
+  --domain "myproject.com" \
+  --submit
+```
+
+**For Directory/Forum Submissions:**
+```
+Ask AI: "Submit directory backlinks to my project using backlink-submission-skill"
+```
 
 ### About MyBacklinks
 
@@ -23,28 +64,6 @@ MyBacklinks is a comprehensive backlink management platform designed for indie h
 - 🔗 **Manage Backlinks**: Track submitted backlinks, their status, and anchor text
 - 📈 **Monitor SEO**: Analyze domain ratings, link performance, and submission history
 - 🌐 **Discover Resources**: Find high-quality websites for backlink opportunities
-
-### Quick Start
-
-#### Install the MCP Server
-
-```bash
-# Clone and build from source
-cd packages/opensource/mybacklinks-mcp
-npm install
-npm run build
-```
-
-See [mybacklinks-mcp README](./mybacklinks-mcp/README.md) for detailed setup instructions.
-
-#### Use with AI Assistants
-
-Once configured, you can ask your AI assistant to:
-
-- "List all my projects"
-- "Show pending backlinks for my SaaS project"
-- "Add a new backlink from producthunt.com"
-- "Analyze my SEO performance this month"
 
 ### Contributing
 
@@ -70,10 +89,51 @@ All packages are released under the MIT License.
 
 ### 软件包
 
-| 软件包 | 描述 |
-|--------|------|
-| [mybacklinks-mcp](./mybacklinks-mcp) | 用于 AI 助手管理外链的 MCP 服务器 |
-| [backlink-submission-skill](./backlink-submission-skill) | 用于自动化外链提交的 Claude Skill |
+| 软件包 | 描述 | 适用场景 |
+|--------|------|----------|
+| [mybacklinks-mcp](./mybacklinks-mcp) | AI 助手 MCP 服务器 | 后端 API 集成 |
+| [skills/blog-commenter-skill](./skills/blog-commenter-skill) | 自动博客评论提交 | **博客**外链 |
+| [skills/backlink-submission-skill](./skills/backlink-submission-skill) | AI + 浏览器自动化 | **目录站/论坛/社交**外链 |
+| [commands](./commands) | 统一工作流命令 | 流程编排 |
+
+### 技能选择指南
+
+| 资源类型 | 推荐技能 | 实现方式 |
+|---------|---------|---------|
+| `blog` 博客 | **blog-commenter-skill** | 脚本自动化 (WordPress, Ghost, Disqus) |
+| `directory` 目录站 | **backlink-submission-skill** | AI + 浏览器自动化 |
+| `forum` 论坛 | **backlink-submission-skill** | AI + 浏览器自动化 |
+| `social` 社交平台 | **backlink-submission-skill** | AI + 浏览器自动化 |
+| `other` 其他 | **backlink-submission-skill** | AI + 浏览器自动化 |
+
+### 快速开始
+
+#### 方式一：使用统一工作流
+
+参见 [commands/submit-backlinks.md](./commands/submit-backlinks.md)，该工作流会根据资源类型自动选择合适的技能。
+
+```
+/submit-backlinks aimcp.info
+/submit-backlinks lovemoney.app blog
+/submit-backlinks myproject.com directory
+```
+
+#### 方式二：直接使用技能
+
+**博客评论：**
+```bash
+cd skills/blog-commenter-skill
+node submit-backlink.js \
+  --url "https://blog.example.com/post" \
+  --project "我的项目" \
+  --domain "myproject.com" \
+  --submit
+```
+
+**目录站/论坛提交：**
+```
+让 AI 执行："使用 backlink-submission-skill 提交目录站外链"
+```
 
 ### 关于 MyBacklinks
 
@@ -83,28 +143,6 @@ MyBacklinks 是一个专为独立开发者和副业项目构建者设计的综�
 - 🔗 **管理外链**：跟踪已提交的外链、状态和锚文本
 - 📈 **监控 SEO**：分析域名评级、链接表现和提交历史
 - 🌐 **发现资源**：寻找高质量的外链机会网站
-
-### 快速开始
-
-#### 安装 MCP 服务器
-
-```bash
-# 从源码克隆并构建
-cd packages/opensource/mybacklinks-mcp
-npm install
-npm run build
-```
-
-详细设置说明请参阅 [mybacklinks-mcp README](./mybacklinks-mcp/README.md)。
-
-#### 配合 AI 助手使用
-
-配置完成后，你可以让 AI 助手：
-
-- "列出我所有的项目"
-- "显示我 SaaS 项目的待处理外链"
-- "从 producthunt.com 添加一个新外链"
-- "分析我这个月的 SEO 表现"
 
 ### 贡献
 
@@ -121,4 +159,3 @@ npm run build
 - 📖 [MCP 设置指南](https://hekmon8.github.io/mybacklinks-tools) - GitHub Pages
 - 🐛 [报告问题](https://github.com/hekmon8/mybacklinks-tools/issues)
 - 💬 [讨论区](https://github.com/hekmon8/mybacklinks-tools/discussions)
-

@@ -1,0 +1,29 @@
+{
+  "name": "blog-commenter-skill",
+  "version": "1.0.0",
+  "description": "Claude Code Skill for automated blog comment posting and marketing outreach",
+  "main": "run.js",
+  "scripts": {
+    "setup": "npm install && npx playwright install chromium",
+    "setup-all-browsers": "npm install && npx playwright install",
+    "test": "node run.js --code \"console.log('Blog Commenter Skill ready!')\"",
+    "install-browsers": "npx playwright install chromium",
+    "install-all-browsers": "npx playwright install"
+  },
+  "keywords": [
+    "claude-skill",
+    "playwright",
+    "blog-automation",
+    "comment-automation",
+    "marketing"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "playwright": "^1.48.0"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}
+

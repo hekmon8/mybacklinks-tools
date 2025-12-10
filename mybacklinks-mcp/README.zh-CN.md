@@ -31,7 +31,7 @@ MyBacklinks 是一个为独立开发者和 Side Project 创建者设计的外链
 | `getLink` | 查看完整的外链详情和历史 |
 | `upsertProjectLink` | 创建或更新外链记录 |
 | `listLinkResources` | 发现潜在的外链资源 |
-| `listAvailableResources` | 列出项目尚未使用的资源 |
+| `discoverBacklinkOpportunities` | 发现项目的外链提交机会（未使用的资源） |
 | `addBacklinkResource` | 新增外链资源（域名重复时拒绝） |
 | `updateBacklinkResource` | 更新已有外链资源（提交 URL、类型、DR、备注等） |
 | `getProjectAnalytics` | 获取项目的 SEO 分析数据 |

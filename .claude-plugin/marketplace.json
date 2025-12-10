@@ -9,10 +9,16 @@
   "repository": "https://github.com/hekmon8/mybacklinks-tools",
   "plugins": [
     {
-      "name": "backlink-submission-skill",
-      "description": "Automate backlink submission workflow using MyBacklinks MCP and browser automation",
+      "name": "blog-commenter-skill",
+      "description": "Automated blog comment posting for marketing and outreach with smart form detection",
       "version": "1.0.0",
-      "source": "./backlink-submission-skill"
+      "source": "./skills/blog-commenter-skill"
+    },
+    {
+      "name": "backlink-submission-skill",
+      "description": "Automate backlink submission for directories, forums, and other non-blog resources using AI and browser automation",
+      "version": "1.1.0",
+      "source": "./skills/backlink-submission-skill"
     }
   ]
 }

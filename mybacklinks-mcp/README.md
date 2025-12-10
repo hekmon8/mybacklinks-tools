@@ -31,7 +31,7 @@ When connected, your AI assistant can use these MCP tools:
 | `getLink` | View complete link details and history |
 | `upsertProjectLink` | Create or update backlink records |
 | `listLinkResources` | Discover potential backlink resources |
-| `listAvailableResources` | List resources not yet used for a project |
+| `discoverBacklinkOpportunities` | Discover backlink submission opportunities (unused resources) for a project |
 | `addBacklinkResource` | Add a new backlink resource (rejects duplicate domains) |
 | `updateBacklinkResource` | Update an existing backlink resource (submission URL, type, DR, notes, etc.) |
 | `getProjectAnalytics` | Get SEO analytics for your project |
