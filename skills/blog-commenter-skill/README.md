@@ -29,7 +29,7 @@ A Claude Code Skill for **automated blog comment posting**. Intelligently detect
 
 ```bash
 # Add marketplace
-claude mcp add marketplace mybacklinks https://github.com/user/mybacklinks-tools
+claude mcp add marketplace mybacklinks https://github.com/hekmon8/mybacklinks-tools
 
 # Install skill
 claude skill install blog-commenter-skill
@@ -39,7 +39,7 @@ claude skill install blog-commenter-skill
 
 ```bash
 # Clone to your skills directory
-git clone https://github.com/user/blog-commenter-skill.git ~/.claude/skills/blog-commenter-skill
+git clone https://github.com/hekmon8/blog-commenter-skill.git ~/.claude/skills/blog-commenter-skill
 
 # Navigate and setup
 cd ~/.claude/skills/blog-commenter-skill
@@ -159,5 +159,4 @@ Contributions are welcome! Please read our [Contributing Guidelines](CONTRIBUTIN
 
 ## Support
 
-- [GitHub Issues](https://github.com/user/blog-commenter-skill/issues)
-- [MyBacklinks Documentation](https://mybacklinks.app/docs)
+- [GitHub Issues](https://github.com/hekmon8/blog-commenter-skill/issues)

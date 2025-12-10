@@ -29,7 +29,7 @@
 
 ```bash
 # 添加市场
-claude mcp add marketplace mybacklinks https://github.com/user/mybacklinks-tools
+claude mcp add marketplace mybacklinks https://github.com/hekmon8/mybacklinks-tools
 
 # 安装技能
 claude skill install blog-commenter-skill
@@ -39,7 +39,7 @@ claude skill install blog-commenter-skill
 
 ```bash
 # 克隆到技能目录
-git clone https://github.com/user/blog-commenter-skill.git ~/.claude/skills/blog-commenter-skill
+git clone https://github.com/hekmon8/blog-commenter-skill.git ~/.claude/skills/blog-commenter-skill
 
 # 进入目录并安装
 cd ~/.claude/skills/blog-commenter-skill
@@ -159,5 +159,4 @@ MIT 许可证 - 详见 [LICENSE](LICENSE)
 
 ## 支持
 
-- [GitHub Issues](https://github.com/user/blog-commenter-skill/issues)
-- [MyBacklinks 文档](https://mybacklinks.app/docs)
+- [GitHub Issues](https://github.com/hekmon8/blog-commenter-skill/issues)
