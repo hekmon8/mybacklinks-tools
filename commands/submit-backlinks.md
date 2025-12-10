@@ -1,6 +1,6 @@
 # Submit Backlinks Workflow
 
-自动外链提交工作流，AI 根据资源类型智能选择合适的技能执行提交。
+Automated backlink submission workflow. AI intelligently selects appropriate skills to execute submissions based on resource type.
 
 ## Usage
 
@@ -9,8 +9,8 @@
 ```
 
 **Parameters:**
-- `domain` (required): 项目域名 (e.g., `aimcp.info`, `lovemoney.app`)
-- `type` (optional): 资源类型过滤 (`blog`, `directory`, `forum`, `social`, `all`). Default: `all`
+- `domain` (required): Project domain (e.g., `aimcp.info`, `lovemoney.app`)
+- `type` (optional): Resource type filter (`blog`, `directory`, `forum`, `social`, `all`). Default: `all`
 
 **Examples:**
 ```
@@ -19,49 +19,49 @@
 /submit-backlinks myproject.com directory
 ```
 
-## 技能分工
+## Skill Division
 
-| 资源类型 | 推荐技能 | 说明 |
-|---------|---------|------|
-| `blog` | **blog-commenter-skill** | 脚本自动化，支持 WordPress/Ghost/Disqus 等 |
-| `directory` | **backlink-submission-skill** | AI + 浏览器自动化 |
-| `forum` | **backlink-submission-skill** | AI + 浏览器自动化 |
-| `social` | **backlink-submission-skill** | AI + 浏览器自动化 |
-| `other` | **backlink-submission-skill** | AI + 浏览器自动化 |
+| Resource Type | Recommended Skill | Description |
+|---------------|-------------------|-------------|
+| `blog` | **blog-commenter-skill** | Script automation, supports WordPress/Ghost/Disqus etc. |
+| `directory` | **backlink-submission-skill** | AI + Browser automation |
+| `forum` | **backlink-submission-skill** | AI + Browser automation |
+| `social` | **backlink-submission-skill** | AI + Browser automation |
+| `other` | **backlink-submission-skill** | AI + Browser automation |
 
 ---
 
 ## Workflow
 
-### Step 1: 获取项目信息
+### Step 1: Get Project Information
 
-调用 MCP `getProjectDetail`:
+Call MCP `getProjectDetail`:
 ```
-获取域名 {domain} 的项目详情
-```
-
-记录：projectId, name, description
-
-### Step 2: 发现外链机会
-
-调用 MCP `discoverBacklinkOpportunities`:
-```
-发现 {domain} 的外链机会，类型过滤: {type}
+Get project details for domain {domain}
 ```
 
-### Step 3: 按类型分组处理
+Record: projectId, name, description
 
-将外链机会按 `type` 分组：
-- **Blog 类型** → 使用 blog-commenter-skill
-- **非 Blog 类型** → 使用 backlink-submission-skill
+### Step 2: Discover Backlink Opportunities
+
+Call MCP `discoverBacklinkOpportunities`:
+```
+Discover backlink opportunities for {domain}, type filter: {type}
+```
+
+### Step 3: Group Processing by Type
+
+Group backlink opportunities by `type`:
+- **Blog types** → Use blog-commenter-skill
+- **Non-blog types** → Use backlink-submission-skill
 
 ---
 
-## Blog 类型处理 (blog-commenter-skill)
+## Blog Type Processing (blog-commenter-skill)
 
-> 使用专门的博客评论脚本，支持表单检测和自动填写
+> Use dedicated blog commenting script with form detection and auto-fill capabilities
 
-### 执行脚本
+### Execute Script
 
 ```bash
 cd packages/opensource/skills/blog-commenter-skill
@@ -77,125 +77,125 @@ node submit-backlink.js \
   --output /tmp/result-{resourceDomain}.json
 ```
 
-### 脚本参数
+### Script Parameters
 
-| 参数 | 必须 | 默认值 | 说明 |
-|-----|------|-------|------|
-| `--url` | ✅ | - | 博客文章 URL |
-| `--project` | ✅ | - | 项目名称 |
-| `--domain` | ✅ | - | 项目域名 |
-| `--description` | ❌ | - | 项目描述 |
-| `--email` | ❌ | `cc@{domain}` | 评论者邮箱 |
-| `--password` | ❌ | `12345678` | 登录密码 |
-| `--submit` | ❌ | false | 实际提交（不加则为测试模式） |
-| `--output` | ❌ | - | 保存结果到 JSON 文件 |
+| Parameter | Required | Default | Description |
+|-----------|----------|---------|-------------|
+| `--url` | ✅ | - | Blog post URL |
+| `--project` | ✅ | - | Project name |
+| `--domain` | ✅ | - | Project domain |
+| `--description` | ❌ | - | Project description |
+| `--email` | ❌ | `cc@{domain}` | Commenter email |
+| `--password` | ❌ | `12345678` | Login password |
+| `--submit` | ❌ | false | Actual submission (test mode if omitted) |
+| `--output` | ❌ | - | Save results to JSON file |
 
-### 支持平台
+### Supported Platforms
 
-| 平台 | 支持度 | 登录要求 |
-|-----|--------|---------|
-| WordPress | ✅ 完全支持 | 通常无需登录 |
-| Ghost | ✅ 完全支持 | 视主题而定 |
-| Custom PHP | ✅ 完全支持 | 视站点而定 |
-| Disqus | ⚠️ 部分支持 | 需要 OAuth/Email 登录 |
-| Dev.to | ⚠️ 部分支持 | 需要 OAuth |
-| Medium | ⚠️ 部分支持 | 需要 OAuth |
+| Platform | Support Level | Login Requirement |
+|----------|---------------|-------------------|
+| WordPress | ✅ Full support | Usually no login required |
+| Ghost | ✅ Full support | Depends on theme |
+| Custom PHP | ✅ Full support | Depends on site |
+| Disqus | ⚠️ Partial support | Requires OAuth/Email login |
+| Dev.to | ⚠️ Partial support | Requires OAuth |
+| Medium | ⚠️ Partial support | Requires OAuth |
 
-### 处理逻辑
+### Processing Logic
 
-1. **无 howToSubmit 说明** → 直接执行脚本
-2. **有 howToSubmit 说明** → 阅读说明判断是否可用脚本
-   - 可用 → 执行脚本
-   - 有特殊要求 → 切换到 backlink-submission-skill 处理
+1. **No howToSubmit instructions** → Execute script directly
+2. **Has howToSubmit instructions** → Read instructions to determine if script can be used
+   - Usable → Execute script
+   - Has special requirements → Switch to backlink-submission-skill for processing
 
 ---
 
-## 非 Blog 类型处理 (backlink-submission-skill)
+## Non-Blog Type Processing (backlink-submission-skill)
 
-> 使用 AI + chrome-devtools 浏览器自动化，根据 howToSubmit 指令执行提交
+> Use AI + chrome-devtools browser automation to execute submissions based on howToSubmit instructions
 
-### 加载技能
+### Load Skill
 
 ```bash
 openskills read chrome-devtools
 ```
 
-### 执行流程
+### Execution Flow
 
-#### 1. 获取资源详情
+#### 1. Get Resource Details
 
-调用 MCP `getBacklinkResourceDetail`:
+Call MCP `getBacklinkResourceDetail`:
 ```
-获取资源 {resourceId} 的详情
+Get details for resource {resourceId}
 ```
 
-关键字段：
-- `domain`: 资源域名
+Key fields:
+- `domain`: Resource domain
 - `type`: directory, forum, social, other
-- `submissionUrl`: 提交 URL
-- `howToSubmit`: 提交说明（Markdown 格式）
+- `submissionUrl`: Submission URL
+- `howToSubmit`: Submission instructions (Markdown format)
 
-#### 2. 解析 howToSubmit
+#### 2. Parse howToSubmit
 
-阅读资源的 `howToSubmit` 字段，理解提交步骤：
+Read the resource's `howToSubmit` field to understand submission steps:
 
 ```markdown
-## 提交方式
+## Submission Method
 
-1. 访问 https://example.com/submit
-2. 无需登录 / 使用 Google 登录
-3. 填写表单：
-   - **Website Name**: 填写网站名称
-   - **URL**: 填写项目网址
-   - **Description**: 填写 50-100 字英文描述
-   - **Category**: 选择 "Tools" 或 "SaaS"
-4. 点击 "Submit" 按钮
-5. 等待邮件确认（通常 1-3 天）
+1. Visit https://example.com/submit
+2. No login required / Use Google login
+3. Fill form:
+   - **Website Name**: Enter website name
+   - **URL**: Enter project website
+   - **Description**: Enter 50-100 word English description
+   - **Category**: Select "Tools" or "SaaS"
+4. Click "Submit" button
+5. Wait for email confirmation (usually 1-3 days)
 
-## 注意事项
-- 不接受中文内容
-- 每个账号限提交 3 个网站
+## Notes
+- Chinese content not accepted
+- Limited to 3 websites per account
 ```
 
-#### 3. 浏览器自动化执行
+#### 3. Browser Automation Execution
 
-使用 chrome-devtools 执行：
+Execute using chrome-devtools:
 
-1. **导航** → 打开 submissionUrl
-2. **截图** → 保存页面初始状态
-3. **登录处理**：
-   - 优先使用 Google OAuth（如已登录）
-   - 或使用 `cc@{domain}` / `12345678` 登录
-   - 登录失败则跳过，标记为 `login_required`
-4. **填写表单** → 按 howToSubmit 指令填写
-5. **提交** → 点击提交按钮
-6. **验证** → 检查提交结果
-7. **截图** → 保存提交后状态
+1. **Navigation** → Open submissionUrl
+2. **Screenshot** → Save initial page state
+3. **Login Handling**:
+   - Prefer Google OAuth (if already logged in)
+   - Or use `cc@{domain}` / `12345678` login
+   - Skip on login failure, mark as `login_required`
+4. **Fill Form** → Fill according to howToSubmit instructions
+5. **Submit** → Click submit button
+6. **Verify** → Check submission result
+7. **Screenshot** → Save post-submission state
 
-#### 4. 更新 howToSubmit（首次提交成功后）
+#### 4. Update howToSubmit (After First Successful Submission)
 
-如果是首次成功提交或发现更好的流程，调用 MCP `updateBacklinkResource`:
+If first successful submission or better flow discovered, call MCP `updateBacklinkResource`:
 
 ```
-更新资源 {resourceId}:
+Update resource {resourceId}:
 - howToSubmit: |
-  ## 如何在 {resourceDomain} 提交
+  ## How to Submit on {resourceDomain}
 
-  1. 访问 {submissionUrl}
-  2. {登录说明}
-  3. 填写表单: {表单字段}
-  4. 点击提交
+  1. Visit {submissionUrl}
+  2. {Login instructions}
+  3. Fill form: {Form fields}
+  4. Click submit
 
-  **注意事项:** {特殊要求}
+  **Notes:** {Special requirements}
 ```
 
 ---
 
-## 结果记录
+## Result Recording
 
-### 本地记录
+### Local Recording
 
-保存到 `tasks/backlink-submission/{domain}-{timestamp}.json`:
+Save to `tasks/backlink-submission/{domain}-{timestamp}.json`:
 
 ```json
 {
@@ -208,78 +208,78 @@ openskills read chrome-devtools
       "type": "blog|directory|forum|social|other",
       "status": "submitted|failed|skipped|login_required",
       "method": "blog-commenter-skill|backlink-submission-skill",
-      "notes": "提交备注"
+      "notes": "Submission notes"
     }
   ]
 }
 ```
 
-### 远程记录
+### Remote Recording
 
-调用 MCP `upsertProjectBacklink`:
+Call MCP `upsertProjectBacklink`:
 ```
-添加外链到项目:
+Add backlink to project:
 - projectId: {projectId}
 - resourceId: {resourceId}
 - targetUrl: https://{domain}
 - status: submitted
-- notes: "通过自动化工作流提交于 {date}"
+- notes: "Submitted via automated workflow on {date}"
 ```
 
 ---
 
-## 最终报告
+## Final Report
 
 ```markdown
-# 外链提交报告
+# Backlink Submission Report
 
-**项目:** {projectName} ({domain})
-**时间:** {timestamp}
-**类型:** {type}
+**Project:** {projectName} ({domain})
+**Time:** {timestamp}
+**Type:** {type}
 
-## 汇总
+## Summary
 
-| 状态 | 数量 |
-|------|------|
-| ✅ 已提交 | {n} |
-| ❌ 失败 | {n} |
-| 🔐 需登录 | {n} |
-| ⏭️ 跳过 | {n} |
+| Status | Count |
+|--------|-------|
+| ✅ Submitted | {n} |
+| ❌ Failed | {n} |
+| 🔐 Login Required | {n} |
+| ⏭️ Skipped | {n} |
 
-## 按技能分组
+## Grouped by Skill
 
-### blog-commenter-skill (博客评论)
-- {blog1.com} - ✅ 评论已发布
-- {blog2.com} - ⚠️ 需要登录
+### blog-commenter-skill (Blog Comments)
+- {blog1.com} - ✅ Comment published
+- {blog2.com} - ⚠️ Login required
 
-### backlink-submission-skill (目录/论坛等)
-- {directory1.com} - ✅ 已提交，待审核
-- {forum1.com} - ❌ CAPTCHA 阻止
+### backlink-submission-skill (Directory/Forum etc.)
+- {directory1.com} - ✅ Submitted, pending review
+- {forum1.com} - ❌ CAPTCHA blocked
 
-## 需要手动处理
-- {domain} - 原因: {reason}
+## Manual Handling Required
+- {domain} - Reason: {reason}
 ```
 
 ---
 
-## 默认配置
+## Default Configuration
 
 ```javascript
-// 默认凭据
+// Default credentials
 email: "cc@{projectDomain}"
 password: "12345678"
 ```
 
-## Skills 依赖
+## Skills Dependencies
 
-| 技能 | 用途 | 适用类型 |
-|-----|------|---------|
-| **blog-commenter-skill** | 博客评论自动提交 | blog |
-| **backlink-submission-skill** | AI + 浏览器自动化 | directory, forum, social, other |
-| **chrome-devtools** | 浏览器操作底层支持 | 被 backlink-submission-skill 调用 |
+| Skill | Purpose | Applicable Types |
+|-------|---------|------------------|
+| **blog-commenter-skill** | Automated blog comment submission | blog |
+| **backlink-submission-skill** | AI + Browser automation | directory, forum, social, other |
+| **chrome-devtools** | Browser operation underlying support | Called by backlink-submission-skill |
 
-## 相关链接
+## Related Links
 
-- [blog-commenter-skill](../skills/blog-commenter-skill/) - 博客评论技能
-- [backlink-submission-skill](../skills/backlink-submission-skill/) - 通用外链提交技能
-- [mybacklinks-mcp](../mybacklinks-mcp/) - MCP 服务器
+- [blog-commenter-skill](../skills/blog-commenter-skill/) - Blog commenting skill
+- [backlink-submission-skill](../skills/backlink-submission-skill/) - General backlink submission skill
+- [mybacklinks-mcp](../mybacklinks-mcp/) - MCP server
