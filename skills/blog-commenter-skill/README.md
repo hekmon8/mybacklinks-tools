@@ -32,7 +32,7 @@ A Claude Code Skill for **automated blog comment posting**. Intelligently detect
 claude mcp add marketplace mybacklinks https://github.com/hekmon8/mybacklinks-tools
 
 # Install skill
-claude skill install blog-commenter-skill
+claude plugin install blog-commenter-skill
 ```
 
 ### Option 2: Manual Installation
