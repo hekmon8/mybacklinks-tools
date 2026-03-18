@@ -12,9 +12,11 @@ This directory contains open source packages from [MyBacklinks](https://mybackli
 
 | Package | Description | Use Case |
 |---------|-------------|----------|
+| [../cli](../cli) | Official npm CLI package | Command-line automation |
 | [mybacklinks-mcp](./mybacklinks-mcp) | MCP server for AI assistants | Backend API integration |
 | [skills/blog-commenter-skill](./skills/blog-commenter-skill) | Automated blog comment posting | **Blog** backlinks |
 | [skills/backlink-submission-skill](./skills/backlink-submission-skill) | AI + browser automation | **Directory/Forum/Social** backlinks |
+| [skills/seo-research-skill](./skills/seo-research-skill) | CLI-driven SEO research workflow | **Domain metrics / backlink audits** |
 | [commands](./commands) | Unified workflow commands | Orchestration |
 
 ### Skill Selection Guide
@@ -40,6 +42,13 @@ See [commands/submit-backlinks.md](./commands/submit-backlinks.md) for the compl
 ```
 
 #### Option 2: Use Skills Directly
+
+**For CLI-based SEO Research:**
+```bash
+npm install -g @mybacklinks/cli
+mybacklinks login
+mybacklinks fetch-dr-by-domain --domain example.com
+```
 
 **For Blog Comments:**
 ```bash
@@ -91,9 +100,11 @@ All packages are released under the MIT License.
 
 | 软件包 | 描述 | 适用场景 |
 |--------|------|----------|
+| [../cli](../cli) | 官方 npm CLI 包 | 命令行自动化 |
 | [mybacklinks-mcp](./mybacklinks-mcp) | AI 助手 MCP 服务器 | 后端 API 集成 |
 | [skills/blog-commenter-skill](./skills/blog-commenter-skill) | 自动博客评论提交 | **博客**外链 |
 | [skills/backlink-submission-skill](./skills/backlink-submission-skill) | AI + 浏览器自动化 | **目录站/论坛/社交**外链 |
+| [skills/seo-research-skill](./skills/seo-research-skill) | 基于 CLI 的 SEO 研究工作流 | **域名指标 / 外链审计** |
 | [commands](./commands) | 统一工作流命令 | 流程编排 |
 
 ### 技能选择指南
@@ -119,6 +130,13 @@ All packages are released under the MIT License.
 ```
 
 #### 方式二：直接使用技能
+
+**CLI SEO 研究：**
+```bash
+npm install -g @mybacklinks/cli
+mybacklinks login
+mybacklinks fetch-dr-by-domain --domain example.com
+```
 
 **博客评论：**
 ```bash
