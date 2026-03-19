@@ -12,7 +12,7 @@ This directory contains open source packages from [MyBacklinks](https://mybackli
 
 | Package | Description | Use Case |
 |---------|-------------|----------|
-| [../cli](../cli) | Official npm CLI package | Command-line automation |
+| [mybacklink-cli](./mybacklink-cli) | Official npm CLI package | Command-line automation |
 | [mybacklinks-mcp](./mybacklinks-mcp) | MCP server for AI assistants | Backend API integration |
 | [skills/blog-commenter-skill](./skills/blog-commenter-skill) | Automated blog comment posting | **Blog** backlinks |
 | [skills/backlink-submission-skill](./skills/backlink-submission-skill) | AI + browser automation | **Directory/Forum/Social** backlinks |
@@ -78,6 +78,12 @@ MyBacklinks is a comprehensive backlink management platform designed for indie h
 
 We welcome contributions! Each package has its own contributing guidelines.
 
+### CLI Release (npm)
+
+- `release-please` updates `mybacklink-cli/package.json` version and creates `cli-v*` tags.
+- `publish-cli.yml` listens for `cli-v*` tags and publishes `@mybacklinks/cli` to npm.
+- Configure repository secret: `NPM_TOKEN`.
+
 ### License
 
 All packages are released under the MIT License.
@@ -100,7 +106,7 @@ All packages are released under the MIT License.
 
 | 软件包 | 描述 | 适用场景 |
 |--------|------|----------|
-| [../cli](../cli) | 官方 npm CLI 包 | 命令行自动化 |
+| [mybacklink-cli](./mybacklink-cli) | 官方 npm CLI 包 | 命令行自动化 |
 | [mybacklinks-mcp](./mybacklinks-mcp) | AI 助手 MCP 服务器 | 后端 API 集成 |
 | [skills/blog-commenter-skill](./skills/blog-commenter-skill) | 自动博客评论提交 | **博客**外链 |
 | [skills/backlink-submission-skill](./skills/backlink-submission-skill) | AI + 浏览器自动化 | **目录站/论坛/社交**外链 |
@@ -165,6 +171,12 @@ MyBacklinks 是一个专为独立开发者和副业项目构建者设计的综�
 ### 贡献
 
 我们欢迎贡献！每个软件包都有自己的贡献指南。
+
+### CLI 发布（npm）
+
+- `release-please` 负责更新 `mybacklink-cli/package.json` 版本并创建 `cli-v*` tag。
+- `publish-cli.yml` 监听 `cli-v*` tag，自动发布 `@mybacklinks/cli` 到 npm。
+- 需要在仓库 Secrets 中配置：`NPM_TOKEN`。
 
 ### 许可证
 

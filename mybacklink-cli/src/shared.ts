@@ -1,5 +1,10 @@
+import { createRequire } from "node:module";
+
+const require = createRequire(import.meta.url);
+const packageJson = require("../package.json") as { version: string };
+
 export const CLIENT_ID = "mcp-cli";
-export const USER_AGENT = "@mybacklinks/cli/0.1.0";
+export const USER_AGENT = `@mybacklinks/cli/${packageJson.version}`;
 export const DEFAULT_BASE_URL = "https://mybacklinks.app";
 
 export type TokenResponse = {

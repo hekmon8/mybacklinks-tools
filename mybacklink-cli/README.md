@@ -36,3 +36,13 @@ mybacklinks fetch-traffic-by-domain --domain example.com
 ## Auth storage
 
 Credentials are stored at `~/.config/mybacklinks/credentials.json`.
+
+## Release automation (GitHub Actions)
+
+- Versioning and tag generation: handled by `.github/workflows/release-please.yml`
+- npm publish trigger: `.github/workflows/publish-cli.yml`
+- Publish tag pattern: `cli-v*` (example: `cli-v0.2.0`)
+
+### Required repository secrets
+
+- `NPM_TOKEN`: npm automation token with permission to publish `@mybacklinks/cli`
