@@ -38,7 +38,7 @@ claude plugin install backlink-submission-skill
 
 ```bash
 git clone https://github.com/hekmon8/mybacklinks-tools.git
-cp -r mybacklinks-tools/packages/opensource/backlink-submission-skill ~/.claude/skills/
+cp -r mybacklinks-tools/packages/opensource/skills/backlink-submission-skill ~/.claude/skills/
 ```
 
 ## Prerequisites
