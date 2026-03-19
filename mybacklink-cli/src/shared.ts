@@ -1,0 +1,13 @@
+export const CLIENT_ID = "mcp-cli";
+export const USER_AGENT = "@mybacklinks/cli/0.1.0";
+export const DEFAULT_BASE_URL = "https://mybacklinks.app";
+
+export type TokenResponse = {
+	access_token: string;
+	refresh_token: string;
+	expires_in: number;
+	refresh_expires_in: number;
+	api_key?: string;
+	api_key_prefix?: string;
+	error_description?: string;
+};
