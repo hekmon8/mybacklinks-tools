@@ -38,6 +38,10 @@ async function main() {
 	if (commandName === "login") {
 		const apiKey = getStringFlag(parsed.flags, "api-key");
 
+		if (apiKey) {
+			process.stderr.write("Validating API key...\n");
+		}
+
 		const credentials: StoredCredentials = apiKey
 			? {
 					version: 1,
@@ -51,6 +55,7 @@ async function main() {
 					port: getNumberFlag(parsed.flags, "port"),
 				});
 
+		process.stderr.write("Verifying credentials...\n");
 		await validateCredentials(credentials, baseUrl);
 		await saveCredentials(credentials);
 
@@ -58,8 +63,8 @@ async function main() {
 			{
 				message:
 					credentials.authMode === "api_key"
-						? "API Key 登录成功"
-						: "OAuth 登录成功",
+						? "Logged in with API Key"
+						: "Logged in with OAuth",
 				authMode: credentials.authMode,
 				baseUrl: credentials.baseUrl,
 			},
@@ -70,7 +75,7 @@ async function main() {
 
 	const definition = getCommandDefinition(commandName);
 	if (!definition?.toolName) {
-		throw new Error(`未知命令: ${commandName}`);
+		throw new Error(`Unknown command: ${commandName}`);
 	}
 
 	const credentials = await requireCredentials();
@@ -148,7 +153,7 @@ async function buildInput(
 
 			if (Object.keys(payload).length === 1) {
 				throw new Error(
-					"请至少提供一个待更新字段，例如 `--name` 或 `--status`。",
+					"At least one field to update is required, e.g. --name or --status.",
 				);
 			}
 
@@ -182,7 +187,7 @@ async function buildInput(
 				domain: requiredString(flags, "domain"),
 			};
 		default:
-			throw new Error(`命令尚未实现: ${commandName}`);
+			throw new Error(`Command not implemented: ${commandName}`);
 	}
 }
 
@@ -196,20 +201,20 @@ async function buildProjectBacklinkUpdateInput(
 		try {
 			parsed = JSON.parse(content);
 		} catch {
-			throw new Error(`--file "${file}" 不是有效的 JSON 文件。`);
+			throw new Error(`--file "${file}" is not valid JSON.`);
 		}
 		if (Array.isArray(parsed)) {
 			return { items: parsed };
 		}
 		if (isRecord(parsed)) {
 			if (!parsed.projectId && !Array.isArray(parsed.items)) {
-				throw new Error(
-					"`--file` JSON 对象需要包含 `projectId` 或 `items` 字段。",
-				);
+			throw new Error(
+				"--file JSON object must contain a `projectId` or `items` field.",
+			);
 			}
 			return parsed;
 		}
-		throw new Error("`--file` 必须是 JSON 对象或 JSON 数组。");
+		throw new Error("--file must be a JSON object or JSON array.");
 	}
 
 	return compactObject({
@@ -262,7 +267,7 @@ function transformResult(commandName: string, result: unknown) {
 function requiredString(flags: Record<string, string | boolean>, name: string) {
 	const value = getStringFlag(flags, name);
 	if (!value) {
-		throw new Error(`缺少必填参数 --${name}`);
+		throw new Error(`Missing required option --${name}`);
 	}
 
 	return value;
@@ -301,14 +306,14 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 
 function renderHelp() {
 	process.stdout.write("MyBacklinks CLI\n\n");
-	process.stdout.write("用法:\n");
+	process.stdout.write("Usage:\n");
 	process.stdout.write("  mybacklinks <command> [options]\n\n");
-	process.stdout.write("全局参数:\n");
-	process.stdout.write("  --json       输出 JSON\n");
+	process.stdout.write("Global Options:\n");
+	process.stdout.write("  --json       Output as JSON\n");
 	process.stdout.write(
-		"  --base-url   覆盖服务端地址，默认 https://mybacklinks.app\n\n",
+		"  --base-url   Override server URL (default: https://mybacklinks.app)\n\n",
 	);
-	process.stdout.write("命令:\n");
+	process.stdout.write("Commands:\n");
 
 	for (const command of getCommandDefinitions()) {
 		process.stdout.write(
@@ -316,7 +321,7 @@ function renderHelp() {
 		);
 	}
 
-	process.stdout.write("\n示例:\n");
+	process.stdout.write("\nExamples:\n");
 	process.stdout.write("  mybacklinks login\n");
 	process.stdout.write("  mybacklinks login --api-key mbk_xxxxx\n");
 	process.stdout.write("  mybacklinks status\n");
@@ -330,7 +335,7 @@ function renderHelp() {
 
 await main().catch((error) => {
 	process.stderr.write(
-		`${error instanceof Error ? error.message : "命令执行失败。"}\n`,
+		`${error instanceof Error ? error.message : "Command failed."}\n`,
 	);
 	process.exitCode = 1;
 });

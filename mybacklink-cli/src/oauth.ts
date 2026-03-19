@@ -45,7 +45,7 @@ export async function loginWithOAuth(params: {
 
 	const tokenPayload = (await tokenResponse.json()) as TokenResponse;
 	if (!tokenResponse.ok || !tokenPayload.access_token) {
-		throw new Error(tokenPayload.error_description || "OAuth 登录失败。");
+		throw new Error(tokenPayload.error_description || "OAuth login failed.");
 	}
 
 	const credentials: StoredCredentials = {
@@ -83,7 +83,7 @@ async function waitForAuthorizationCode(params: {
 			const timeout = setTimeout(
 				() => {
 					server.close();
-					reject(new Error("等待 OAuth 回调超时，请重试。"));
+					reject(new Error("Timed out waiting for OAuth callback. Please try again."));
 				},
 				5 * 60 * 1000,
 			);
@@ -102,19 +102,19 @@ async function waitForAuthorizationCode(params: {
 				const callbackState = callbackUrl.searchParams.get("state");
 
 				if (!code || callbackState !== state) {
-					response.writeHead(400, {
-						"content-type": "text/html; charset=utf-8",
-					});
-					response.end(
-						"<h1>MyBacklinks CLI</h1><p>授权失败，state 不匹配或 code 缺失。</p>",
-					);
+				response.writeHead(400, {
+					"content-type": "text/html; charset=utf-8",
+				});
+				response.end(
+					"<h1>MyBacklinks CLI</h1><p>Authorization failed: state mismatch or missing code.</p>",
+				);
 					return;
 				}
 
-				response.writeHead(200, { "content-type": "text/html; charset=utf-8" });
-				response.end(
-					"<h1>MyBacklinks CLI</h1><p>登录完成，可以关闭这个窗口并返回终端。</p>",
-				);
+			response.writeHead(200, { "content-type": "text/html; charset=utf-8" });
+			response.end(
+				"<h1>MyBacklinks CLI</h1><p>Login complete. You can close this window and return to the terminal.</p>",
+			);
 
 				clearTimeout(timeout);
 				server.close();
@@ -136,12 +136,14 @@ async function waitForAuthorizationCode(params: {
 					authorizeUrl.searchParams.set("code_challenge_method", "S256");
 					authorizeUrl.searchParams.set("state", state);
 
+					process.stderr.write("Opening browser for authentication...\n");
 					const opened = await openBrowser(authorizeUrl.toString());
 					if (!opened) {
-						process.stdout.write(
-							`请在浏览器中打开以下地址完成登录：\n${authorizeUrl.toString()}\n`,
+						process.stderr.write(
+							`Could not open browser. Please visit the following URL to log in:\n${authorizeUrl.toString()}\n`,
 						);
 					}
+					process.stderr.write("Waiting for authorization...\n");
 				} catch (error) {
 					clearTimeout(timeout);
 					server.close();

@@ -45,7 +45,7 @@ export async function invokeTool(params: {
 }) {
 	const definition = getCommandDefinition(params.commandName);
 	if (!definition?.toolPath) {
-		throw new Error(`未知命令: ${params.commandName}`);
+		throw new Error(`Unknown command: ${params.commandName}`);
 	}
 
 	const resolvedBaseUrl = normalizeBaseUrl(
@@ -70,12 +70,12 @@ export async function invokeTool(params: {
 	});
 
 	const payload = (await response.json().catch(() => {
-		throw new Error(`服务端返回了不可解析响应，状态码 ${response.status}`);
+		throw new Error(`Server returned an unparseable response (status ${response.status})`);
 	})) as ToolSuccessResponse & ToolErrorResponse;
 
 	if (!response.ok) {
 		throw new Error(
-			payload.error?.message || `命令执行失败，状态码 ${response.status}。`,
+			payload.error?.message || `Command failed (status ${response.status}).`,
 		);
 	}
 
@@ -95,7 +95,7 @@ async function ensureFreshCredentials(
 	).getTime();
 	if (refreshExpiresAt <= Date.now()) {
 		throw new Error(
-			"OAuth 刷新令牌已过期，请重新执行 `mybacklinks login`。",
+			"OAuth refresh token has expired. Please run `mybacklinks login` again.",
 		);
 	}
 
@@ -125,7 +125,7 @@ async function ensureFreshCredentials(
 	if (!response.ok || !("access_token" in payload)) {
 		throw new Error(
 			getOAuthErrorDescription(payload) ||
-				"OAuth 刷新失败，请重新执行 `mybacklinks login`。",
+				"OAuth token refresh failed. Please run `mybacklinks login` again.",
 		);
 	}
 

@@ -62,7 +62,7 @@ export async function requireCredentials() {
 	const credentials = await loadCredentials();
 	if (!credentials) {
 		throw new Error(
-			"未检测到登录凭证。请先运行 `mybacklinks login` 或 `mybacklinks login --api-key <key>`。",
+			"No credentials found. Please run `mybacklinks login` or `mybacklinks login --api-key <key>` first.",
 		);
 	}
 
