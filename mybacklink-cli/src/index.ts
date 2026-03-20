@@ -14,12 +14,15 @@ import {
 } from "./command-registry.js";
 import {
 	type StoredCredentials,
+	deleteCredentials,
+	loadCredentials,
 	requireCredentials,
 	saveCredentials,
 } from "./credentials.js";
 import { printOutput } from "./format.js";
-import { invokeTool, validateCredentials } from "./http.js";
+import { invokeTool, normalizeBaseUrl, validateCredentials } from "./http.js";
 import { loginWithOAuth } from "./oauth.js";
+import { USER_AGENT } from "./shared.js";
 
 async function main() {
 	const parsed = parseArgv(process.argv.slice(2));
@@ -80,13 +83,36 @@ async function main() {
 		return;
 	}
 
+	if (commandName === "logout") {
+		const credentials = await loadCredentials();
+		if (credentials) {
+			await revokeRemoteCredentials(credentials, baseUrl);
+			await deleteCredentials();
+		}
+		printOutput({ message: "Logged out successfully" }, json);
+		return;
+	}
+
 	const definition = getCommandDefinition(commandName);
 	if (!definition?.toolName) {
 		throw new Error(`Unknown command: ${commandName}`);
 	}
 
 	const credentials = await requireCredentials();
+	validateRequiredParams(commandName, parsed.flags);
 	const input = await buildInput(commandName, parsed.flags);
+
+	if (isPaginatedCommand(commandName) && getBooleanFlag(parsed.flags, "all")) {
+		const allResults = await fetchAllPages({
+			commandName,
+			flags: parsed.flags,
+			baseUrl,
+			credentials,
+		});
+		printOutput(transformResult(commandName, allResults), json);
+		return;
+	}
+
 	const result = await invokeTool({
 		commandName,
 		input,
@@ -94,7 +120,9 @@ async function main() {
 		credentials,
 	});
 
-	printOutput(transformResult(commandName, result), json);
+	const transformed = transformResult(commandName, result);
+	printPaginationHint(commandName, result);
+	printOutput(transformed, json);
 }
 
 async function buildInput(
@@ -238,6 +266,14 @@ async function buildProjectBacklinkUpdateInput(
 }
 
 function transformResult(commandName: string, result: unknown) {
+	if (!result || typeof result !== "object") return result;
+
+	// Strip nextCursor from paginated responses (pagination hint is shown separately on stderr)
+	if (isPaginatedCommand(commandName)) {
+		const { nextCursor: _, ...rest } = result as Record<string, unknown>;
+		return rest;
+	}
+
 	if (
 		commandName !== "fetch-dr-by-domain" &&
 		commandName !== "fetch-traffic-by-domain"
@@ -246,28 +282,27 @@ function transformResult(commandName: string, result: unknown) {
 	}
 
 	if (
-		!result ||
-		typeof result !== "object" ||
 		!("metrics" in result) ||
-		typeof result.metrics !== "object" ||
-		!result.metrics
+		typeof (result as Record<string, unknown>).metrics !== "object" ||
+		!(result as Record<string, unknown>).metrics
 	) {
 		return result;
 	}
 
-	const metrics = result.metrics as Record<string, unknown>;
+	const r = result as Record<string, unknown>;
+	const metrics = r.metrics as Record<string, unknown>;
 	return commandName === "fetch-dr-by-domain"
 		? {
-				domain: (result as Record<string, unknown>).domain,
+				domain: r.domain,
 				dr: metrics.dr,
-				creditCost: (result as Record<string, unknown>).creditCost,
-				creditBalance: (result as Record<string, unknown>).creditBalance,
+				creditCost: r.creditCost,
+				creditBalance: r.creditBalance,
 			}
 		: {
-				domain: (result as Record<string, unknown>).domain,
+				domain: r.domain,
 				traffic: metrics.traffic,
-				creditCost: (result as Record<string, unknown>).creditCost,
-				creditBalance: (result as Record<string, unknown>).creditBalance,
+				creditCost: r.creditCost,
+				creditBalance: r.creditBalance,
 			};
 }
 
@@ -309,6 +344,155 @@ function compactObject<T extends Record<string, unknown>>(value: T) {
 
 function isRecord(value: unknown): value is Record<string, unknown> {
 	return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+async function revokeRemoteCredentials(
+	credentials: StoredCredentials,
+	baseUrlOverride?: string,
+) {
+	const resolvedBaseUrl = normalizeBaseUrl(
+		baseUrlOverride || credentials.baseUrl,
+	);
+
+	const token =
+		credentials.authMode === "api_key"
+			? credentials.apiKey
+			: credentials.accessToken;
+
+	try {
+		await fetch(`${resolvedBaseUrl}/api/oauth/revoke`, {
+			method: "POST",
+			signal: AbortSignal.timeout(10_000),
+			headers: {
+				authorization: `Bearer ${token}`,
+				"user-agent": USER_AGENT,
+			},
+		});
+	} catch {
+		// Best-effort revoke; proceed with local deletion even if server is unreachable
+	}
+}
+
+function validateRequiredParams(
+	commandName: string,
+	flags: Record<string, string | boolean>,
+) {
+	const definition = getCommandDefinition(commandName);
+	if (!definition?.params) return;
+
+	const missing = definition.params
+		.filter((p) => p.required && !(p.name in flags))
+		.map((p) => `--${p.name}`);
+
+	if (missing.length > 0) {
+		throw new Error(
+			`Missing required option${missing.length > 1 ? "s" : ""}: ${missing.join(", ")}`,
+		);
+	}
+
+	// Commands that need at least one of a set of params
+	const atLeastOneOf: Record<string, string[]> = {
+		"fetch-project-info": ["project-id", "domain"],
+	};
+
+	const group = atLeastOneOf[commandName];
+	if (group && !group.some((name) => name in flags)) {
+		throw new Error(
+			`At least one of ${group.map((n) => `--${n}`).join(" or ")} is required`,
+		);
+	}
+}
+
+const PAGINATED_COMMANDS = new Set([
+	"list-projects",
+	"list-backlink-resources",
+	"fetch-project-backlinks",
+]);
+
+function isPaginatedCommand(name: string) {
+	return PAGINATED_COMMANDS.has(name);
+}
+
+type PaginatedResult = {
+	nextCursor?: string;
+	[key: string]: unknown;
+};
+
+async function fetchAllPages(params: {
+	commandName: string;
+	flags: Record<string, string | boolean>;
+	baseUrl?: string;
+	credentials: StoredCredentials;
+}): Promise<unknown> {
+	const allItems: unknown[] = [];
+	let cursor: string | undefined;
+	let pages = 0;
+
+	do {
+		const flagsCopy = { ...params.flags };
+		if (cursor) {
+			flagsCopy.cursor = cursor;
+		}
+		delete flagsCopy.all;
+
+		const input = await buildInput(params.commandName, flagsCopy);
+		const result = (await invokeTool({
+			commandName: params.commandName,
+			input,
+			baseUrl: params.baseUrl,
+			credentials: params.credentials,
+		})) as PaginatedResult | null;
+
+		if (!result || typeof result !== "object") break;
+
+		const arrayKey = Object.keys(result).find((k) =>
+			Array.isArray(result[k]),
+		);
+		if (arrayKey) {
+			allItems.push(...(result[arrayKey] as unknown[]));
+		}
+
+		cursor = result.nextCursor;
+		pages += 1;
+
+		if (pages > 100) break;
+	} while (cursor);
+
+	const listKey = getListKey(params.commandName);
+	return { [listKey]: allItems, total: allItems.length };
+}
+
+function getListKey(commandName: string) {
+	switch (commandName) {
+		case "list-projects":
+			return "projects";
+		case "list-backlink-resources":
+			return "resources";
+		case "fetch-project-backlinks":
+			return "backlinks";
+		default:
+			return "items";
+	}
+}
+
+function printPaginationHint(commandName: string, result: unknown) {
+	if (!isPaginatedCommand(commandName)) return;
+	if (!result || typeof result !== "object") return;
+
+	const r = result as PaginatedResult;
+	const arrayKey = Object.keys(r).find((k) => Array.isArray(r[k]));
+	if (!arrayKey) return;
+
+	const items = r[arrayKey] as unknown[];
+	const count = items.length;
+
+	if (r.nextCursor) {
+		process.stderr.write(
+			`\nShowing ${count} items. More available — use --all to fetch everything, or --cursor "${r.nextCursor}" for the next page.\n`,
+		);
+	} else {
+		process.stderr.write(`\nShowing all ${count} items.\n`);
+	}
 }
 
 function renderHelp() {

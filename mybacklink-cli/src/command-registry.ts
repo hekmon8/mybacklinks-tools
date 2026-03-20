@@ -52,6 +52,11 @@ const commandDefinitions: CliCommandDefinition[] = [
 		],
 	},
 	{
+		name: "logout",
+		description: "Revoke current credentials and log out",
+		examples: ["mybacklinks logout"],
+	},
+	{
 		name: "status",
 		toolName: "getStatus",
 		toolPath: "/api/mcp/tools/status/get",
@@ -67,15 +72,24 @@ const commandDefinitions: CliCommandDefinition[] = [
 			{
 				name: "limit",
 				type: "number",
-				description: "Max number of projects to return",
+				description: "Max number of projects to return per page",
 			},
 			{
 				name: "cursor",
 				type: "string",
 				description: "Pagination cursor from a previous response",
 			},
+			{
+				name: "all",
+				type: "boolean",
+				description: "Fetch all pages automatically",
+			},
 		],
-		examples: ["mybacklinks list-projects", "mybacklinks list-projects --limit 5"],
+		examples: [
+			"mybacklinks list-projects",
+			"mybacklinks list-projects --limit 5",
+			"mybacklinks list-projects --all",
+		],
 	},
 	{
 		name: "list-backlink-resources",
@@ -86,12 +100,17 @@ const commandDefinitions: CliCommandDefinition[] = [
 			{
 				name: "limit",
 				type: "number",
-				description: "Max number of resources to return",
+				description: "Max number of resources to return per page",
 			},
 			{
 				name: "cursor",
 				type: "string",
 				description: "Pagination cursor from a previous response",
+			},
+			{
+				name: "all",
+				type: "boolean",
+				description: "Fetch all pages automatically",
 			},
 			{
 				name: "type",
@@ -117,6 +136,7 @@ const commandDefinitions: CliCommandDefinition[] = [
 		examples: [
 			"mybacklinks list-backlink-resources",
 			"mybacklinks list-backlink-resources --type guest_post --dr-min 30",
+			"mybacklinks list-backlink-resources --all",
 		],
 	},
 	{
@@ -331,17 +351,23 @@ const commandDefinitions: CliCommandDefinition[] = [
 			{
 				name: "limit",
 				type: "number",
-				description: "Max number of backlinks to return",
+				description: "Max number of backlinks to return per page",
 			},
 			{
 				name: "cursor",
 				type: "string",
 				description: "Pagination cursor from a previous response",
 			},
+			{
+				name: "all",
+				type: "boolean",
+				description: "Fetch all pages automatically",
+			},
 		],
 		examples: [
 			"mybacklinks fetch-project-backlinks --project-id proj_abc",
 			"mybacklinks fetch-project-backlinks --project-id proj_abc --status indexed --limit 20",
+			"mybacklinks fetch-project-backlinks --project-id proj_abc --all",
 		],
 	},
 	{

@@ -1,4 +1,4 @@
-import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { mkdir, readFile, unlink, writeFile } from "node:fs/promises";
 import { homedir } from "node:os";
 import { dirname, join } from "node:path";
 
@@ -56,6 +56,14 @@ export async function saveCredentials(credentials: StoredCredentials) {
 		`${JSON.stringify(credentials, null, 2)}\n`,
 		{ encoding: "utf8", mode: 0o600 },
 	);
+}
+
+export async function deleteCredentials() {
+	try {
+		await unlink(credentialsPath);
+	} catch {
+		// File may not exist; that's fine
+	}
 }
 
 export async function requireCredentials() {
