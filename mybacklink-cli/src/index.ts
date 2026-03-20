@@ -10,6 +10,7 @@ import {
 import {
 	getCommandDefinition,
 	getCommandDefinitions,
+	getGlobalParams,
 } from "./command-registry.js";
 import {
 	type StoredCredentials,
@@ -26,12 +27,18 @@ async function main() {
 	const json = getBooleanFlag(parsed.flags, "json");
 	const baseUrl = getStringFlag(parsed.flags, "base-url");
 
-	if (
-		!commandName ||
-		commandName === "help" ||
-		getBooleanFlag(parsed.flags, "help")
-	) {
+	if (!commandName || commandName === "help") {
 		renderHelp();
+		return;
+	}
+
+	if (getBooleanFlag(parsed.flags, "help")) {
+		const def = getCommandDefinition(commandName);
+		if (def) {
+			renderCommandHelp(def);
+		} else {
+			renderHelp();
+		}
 		return;
 	}
 
@@ -305,32 +312,55 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 }
 
 function renderHelp() {
-	process.stdout.write("MyBacklinks CLI\n\n");
-	process.stdout.write("Usage:\n");
-	process.stdout.write("  mybacklinks <command> [options]\n\n");
-	process.stdout.write("Global Options:\n");
-	process.stdout.write("  --json       Output as JSON\n");
-	process.stdout.write(
-		"  --base-url   Override server URL (default: https://mybacklinks.app)\n\n",
-	);
-	process.stdout.write("Commands:\n");
+	const w = process.stdout.write.bind(process.stdout);
+	w("MyBacklinks CLI\n\n");
+	w("Usage:\n");
+	w("  mybacklinks <command> [options]\n\n");
 
+	w("Global Options:\n");
+	for (const p of getGlobalParams()) {
+		const flag = `--${p.name}`;
+		const def = p.defaultValue ? ` (default: ${p.defaultValue})` : "";
+		w(`  ${flag.padEnd(16)} ${p.description}${def}\n`);
+	}
+	w("  --help".padEnd(18) + "Show help for a command\n");
+
+	w("\nCommands:\n");
 	for (const command of getCommandDefinitions()) {
-		process.stdout.write(
-			`  ${command.name.padEnd(26)} ${command.description}\n`,
-		);
+		w(`  ${command.name.padEnd(26)} ${command.description}\n`);
 	}
 
-	process.stdout.write("\nExamples:\n");
-	process.stdout.write("  mybacklinks login\n");
-	process.stdout.write("  mybacklinks login --api-key mbk_xxxxx\n");
-	process.stdout.write("  mybacklinks status\n");
-	process.stdout.write(
-		"  mybacklinks fetch-project-backlinks --project-id <id> --status indexed\n",
-	);
-	process.stdout.write(
-		"  mybacklinks fetch-dr-by-domain --domain example.com\n",
-	);
+	w("\nRun `mybacklinks <command> --help` for detailed usage of any command.\n");
+}
+
+function renderCommandHelp(def: ReturnType<typeof getCommandDefinition>) {
+	if (!def) return;
+	const w = process.stdout.write.bind(process.stdout);
+
+	w(`mybacklinks ${def.name}\n\n`);
+	w(`${def.description}\n\n`);
+	w("Usage:\n");
+	w(`  mybacklinks ${def.name} [options]\n`);
+
+	const allParams = [...(def.params ?? []), ...getGlobalParams()];
+	if (allParams.length > 0) {
+		w("\nOptions:\n");
+		const maxLen = Math.max(...allParams.map((p) => p.name.length + 2));
+		for (const p of allParams) {
+			const flag = `--${p.name}`;
+			const tag = p.required ? " (required)" : "";
+			const typeTag = p.type !== "boolean" ? ` <${p.type}>` : "";
+			const def_ = p.defaultValue ? `  [default: ${p.defaultValue}]` : "";
+			w(`  ${(flag + typeTag).padEnd(maxLen + 12)} ${p.description}${tag}${def_}\n`);
+		}
+	}
+
+	if (def.examples && def.examples.length > 0) {
+		w("\nExamples:\n");
+		for (const example of def.examples) {
+			w(`  ${example}\n`);
+		}
+	}
 }
 
 await main().catch((error) => {

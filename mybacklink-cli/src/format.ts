@@ -14,52 +14,120 @@ export function printOutput(data: unknown, asJson: boolean) {
 		return;
 	}
 
+	process.stdout.write(formatMarkdown(data));
+}
+
+function formatMarkdown(data: unknown, depth = 0): string {
+	if (isPrimitive(data)) {
+		return `${String(data)}\n`;
+	}
+
 	if (Array.isArray(data)) {
-		console.table(data);
-		return;
+		return formatArray(data);
 	}
 
 	if (!isPlainObject(data)) {
-		process.stdout.write(`${String(data)}\n`);
-		return;
+		return `${String(data)}\n`;
 	}
 
-	const scalarEntries = Object.entries(data).filter(([, value]) =>
-		isPrimitive(value),
+	return formatObject(data, depth);
+}
+
+function formatObject(obj: Record<string, unknown>, depth: number): string {
+	const lines: string[] = [];
+
+	for (const [key, value] of Object.entries(obj)) {
+		if (isPrimitive(value)) {
+			lines.push(`- **${key}**: ${formatValue(value)}`);
+		} else if (Array.isArray(value)) {
+			if (depth === 0) {
+				lines.push("");
+				lines.push(`### ${key}`);
+				lines.push("");
+			} else {
+				lines.push(`- **${key}**:`);
+			}
+			lines.push(formatArray(value).trimEnd());
+		} else if (isPlainObject(value)) {
+			if (depth === 0) {
+				lines.push("");
+				lines.push(`### ${key}`);
+				lines.push("");
+			} else {
+				lines.push(`- **${key}**:`);
+			}
+			const nested = formatObject(value, depth + 1);
+			if (depth > 0) {
+				lines.push(
+					...nested
+						.split("\n")
+						.filter((l) => l.length > 0)
+						.map((l) => `  ${l}`),
+				);
+			} else {
+				lines.push(nested.trimEnd());
+			}
+		} else {
+			lines.push(`- **${key}**: ${String(value)}`);
+		}
+	}
+
+	return `${lines.join("\n")}\n`;
+}
+
+function formatValue(value: unknown): string {
+	if (value === null) return "–";
+	if (typeof value === "boolean") return value ? "yes" : "no";
+	return String(value);
+}
+
+function formatArray(arr: unknown[]): string {
+	if (arr.length === 0) {
+		return "_No items_\n";
+	}
+
+	if (arr.every(isPrimitive)) {
+		return arr.map((item) => `- ${formatValue(item)}`).join("\n") + "\n";
+	}
+
+	if (!arr.every(isPlainObject)) {
+		return arr.map((item) => `- ${JSON.stringify(item)}`).join("\n") + "\n";
+	}
+
+	const objects = arr as Record<string, unknown>[];
+	const columns = collectColumns(objects);
+
+	if (columns.length === 0) {
+		return "_No items_\n";
+	}
+
+	const header = `| ${columns.join(" | ")} |`;
+	const separator = `| ${columns.map(() => "---").join(" | ")} |`;
+	const rows = objects.map(
+		(row) =>
+			`| ${columns.map((col) => formatCell(row[col])).join(" | ")} |`,
 	);
 
-	if (scalarEntries.length > 0) {
-		for (const [key, value] of scalarEntries) {
-			process.stdout.write(`${key}: ${String(value)}\n`);
+	return [header, separator, ...rows].join("\n") + "\n";
+}
+
+function collectColumns(objects: Record<string, unknown>[]): string[] {
+	const seen = new Set<string>();
+	for (const obj of objects) {
+		for (const key of Object.keys(obj)) {
+			seen.add(key);
 		}
 	}
+	return [...seen];
+}
 
-	for (const [key, value] of Object.entries(data)) {
-		if (isPrimitive(value)) {
-			continue;
-		}
-
-		process.stdout.write(`\n${key}:\n`);
-
-		if (Array.isArray(value)) {
-			console.table(value);
-			continue;
-		}
-
-		if (isPlainObject(value)) {
-			const nestedScalarEntries = Object.entries(value).filter(([, nested]) =>
-				isPrimitive(nested),
-			);
-			if (nestedScalarEntries.length > 0) {
-				for (const [nestedKey, nestedValue] of nestedScalarEntries) {
-					process.stdout.write(`  ${nestedKey}: ${String(nestedValue)}\n`);
-				}
-			} else {
-				process.stdout.write(`${JSON.stringify(value, null, 2)}\n`);
-			}
-			continue;
-		}
-
-		process.stdout.write(`${String(value)}\n`);
+function formatCell(value: unknown): string {
+	if (value === undefined || value === null) return "–";
+	if (typeof value === "boolean") return value ? "yes" : "no";
+	if (typeof value === "object") {
+		const json = JSON.stringify(value);
+		return json.length > 60 ? `${json.slice(0, 57)}...` : json;
 	}
+	const str = String(value);
+	return str.includes("|") ? str.replace(/\|/g, "\\|") : str;
 }
