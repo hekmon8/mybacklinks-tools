@@ -1,17 +1,26 @@
 {
 	"name": "@mybacklinks/cli",
-	"version": "0.1.0",
+	"version": "0.1.1",
 	"description": "Official CLI for MyBacklinks project, backlink, and domain research workflows",
 	"type": "module",
 	"bin": {
 		"mybacklinks": "dist/index.js"
 	},
-	"files": ["dist", "README.md"],
+	"files": [
+		"dist",
+		"README.md"
+	],
 	"scripts": {
 		"build": "tsc -p tsconfig.json",
 		"dev": "node --import tsx src/index.ts"
 	},
-	"keywords": ["seo", "backlinks", "cli", "mcp", "mybacklinks"],
+	"keywords": [
+		"seo",
+		"backlinks",
+		"cli",
+		"mcp",
+		"mybacklinks"
+	],
 	"license": "MIT",
 	"publishConfig": {
 		"access": "public"
