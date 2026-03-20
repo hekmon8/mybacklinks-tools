@@ -23,6 +23,9 @@ import { printOutput } from "./format.js";
 import { invokeTool, normalizeBaseUrl, validateCredentials } from "./http.js";
 import { loginWithOAuth } from "./oauth.js";
 import { USER_AGENT } from "./shared.js";
+import { performUpdate, startUpdateCheck } from "./update.js";
+
+const updateCheck = startUpdateCheck();
 
 async function main() {
 	const parsed = parseArgv(process.argv.slice(2));
@@ -553,3 +556,8 @@ await main().catch((error) => {
 	);
 	process.exitCode = 1;
 });
+
+const latestVersion = await updateCheck;
+if (latestVersion) {
+	performUpdate(latestVersion);
+}
