@@ -78,6 +78,9 @@ function formatObject(obj: Record<string, unknown>, depth: number): string {
 function formatValue(value: unknown): string {
 	if (value === null) return "–";
 	if (typeof value === "boolean") return value ? "yes" : "no";
+	if (typeof value === "number" && Number.isFinite(value)) {
+		return value.toLocaleString("en-US");
+	}
 	return String(value);
 }
 
