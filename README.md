@@ -1,37 +1,36 @@
 # MyBacklinks Open Source
 
-[English](#english) | [中文](#中文)
+**English** | [中文](./README.zh-CN.md)
 
 ---
 
-## English
-
 This directory contains open source packages from [MyBacklinks](https://mybacklinks.app).
 
-### Packages
+## Packages
 
-| Package | Description | Use Case |
-|---------|-------------|----------|
-| [mybacklink-cli](./mybacklink-cli) | Official npm CLI package | Command-line automation |
-| [mybacklinks-mcp](./mybacklinks-mcp) | MCP server for AI assistants | Backend API integration |
-| [skills/blog-commenter-skill](./skills/blog-commenter-skill) | Automated blog comment posting | **Blog** backlinks |
-| [skills/backlink-submission-skill](./skills/backlink-submission-skill) | AI + browser automation | **Directory/Forum/Social** backlinks |
-| [skills/seo-research-skill](./skills/seo-research-skill) | CLI-driven SEO research workflow | **Domain metrics / backlink audits** |
-| [commands](./commands) | Unified workflow commands | Orchestration |
+| Package | Description | npm | Use Case |
+|---------|-------------|-----|----------|
+| [mybacklink-cli](./mybacklink-cli) | Official npm CLI package | [![npm](https://img.shields.io/npm/v/@mybacklinks/cli)](https://www.npmjs.com/package/@mybacklinks/cli) | Command-line automation |
+| [mybacklinks-mcp](./mybacklinks-mcp) | MCP server for AI assistants | — | Backend API integration |
+| [skills/blog-commenter-skill](./skills/blog-commenter-skill) | Automated blog comment posting | — | **Blog** backlinks |
+| [skills/mybacklinks-cli-domain-analysis](./skills/mybacklinks-cli-domain-analysis) | Domain SEO metrics & backlink research | — | **Domain DR / traffic / competitor analysis** |
+| [skills/mybacklinks-cli-campaign-tracking](./skills/mybacklinks-cli-campaign-tracking) | Project & link-building campaign management | — | **Project tracking / backlink campaigns** |
+| [skills/mybacklinks-cli-resource-management](./skills/mybacklinks-cli-resource-management) | Backlink opportunity database management | — | **Directory / guest post / forum resources** |
+| [commands](./commands) | Unified workflow commands | — | Orchestration |
 
-### Skill Selection Guide
+## Skill Selection Guide
 
-| Resource Type | Recommended Skill | Method |
-|---------------|------------------|--------|
-| `blog` | **blog-commenter-skill** | Scripts (WordPress, Ghost, Disqus) |
-| `directory` | **backlink-submission-skill** | AI + Browser automation |
-| `forum` | **backlink-submission-skill** | AI + Browser automation |
-| `social` | **backlink-submission-skill** | AI + Browser automation |
-| `other` | **backlink-submission-skill** | AI + Browser automation |
+| Task | Recommended Skill | Method |
+|------|------------------|--------|
+| Blog comment backlinks | **blog-commenter-skill** | Scripts (WordPress, Ghost, Disqus) |
+| Check domain DR / traffic | **mybacklinks-cli-domain-analysis** | CLI (`mybacklinks` commands) |
+| Discover competitor backlinks | **mybacklinks-cli-domain-analysis** | CLI (`mybacklinks` commands) |
+| Manage projects & track campaigns | **mybacklinks-cli-campaign-tracking** | CLI (`mybacklinks` commands) |
+| Build backlink opportunity database | **mybacklinks-cli-resource-management** | CLI (`mybacklinks` commands) |
 
-### Quick Start
+## Quick Start
 
-#### Option 1: Use the Unified Workflow
+### Option 1: Use the Unified Workflow
 
 See [commands/submit-backlinks.md](./commands/submit-backlinks.md) for the complete workflow that automatically routes to the right skill based on resource type.
 
@@ -41,16 +40,16 @@ See [commands/submit-backlinks.md](./commands/submit-backlinks.md) for the compl
 /submit-backlinks myproject.com directory
 ```
 
-#### Option 2: Use Skills Directly
+### Option 2: Use Skills Directly
 
-**For CLI-based SEO Research:**
+**Domain Analysis (via CLI):**
 ```bash
 npm install -g @mybacklinks/cli
 mybacklinks login
 mybacklinks fetch-dr-by-domain --domain example.com
 ```
 
-**For Blog Comments:**
+**Blog Comments:**
 ```bash
 cd skills/blog-commenter-skill
 node submit-backlink.js \
@@ -60,12 +59,13 @@ node submit-backlink.js \
   --submit
 ```
 
-**For Directory/Forum Submissions:**
+**Campaign Tracking / Resource Management:**
 ```
-Ask AI: "Submit directory backlinks to my project using backlink-submission-skill"
+Ask AI: "List my projects and their backlink status"
+Ask AI: "Find backlink opportunities for directories"
 ```
 
-### About MyBacklinks
+## About MyBacklinks
 
 MyBacklinks is a comprehensive backlink management platform designed for indie hackers and side project builders. We help you:
 
@@ -74,118 +74,23 @@ MyBacklinks is a comprehensive backlink management platform designed for indie h
 - 📈 **Monitor SEO**: Analyze domain ratings, link performance, and submission history
 - 🌐 **Discover Resources**: Find high-quality websites for backlink opportunities
 
-### Contributing
+## Contributing
 
 We welcome contributions! Each package has its own contributing guidelines.
 
-### CLI Release (npm)
+## CLI Release (npm)
 
 - `release-please` updates `mybacklink-cli/package.json` version and creates `cli-v*` tags.
-- `publish-cli.yml` listens for `cli-v*` tags and publishes `@mybacklinks/cli` to npm.
+- `publish-cli.yml` listens for `cli-v*` tags and publishes [`@mybacklinks/cli`](https://www.npmjs.com/package/@mybacklinks/cli) to npm.
 - Configure repository secret: `NPM_TOKEN`.
 
-### License
+## License
 
 All packages are released under the MIT License.
 
-### Links
+## Links
 
 - 🌐 [MyBacklinks Website](https://mybacklinks.app)
 - 📚 [Documentation](https://docs.mybacklinks.app)
 - 📖 [MCP Setup Guide](https://hekmon8.github.io/mybacklinks-tools) - GitHub Pages
 - 🐛 [Report Issues](https://github.com/hekmon8/mybacklinks-tools/issues)
-- 💬 [Discussions](https://github.com/hekmon8/mybacklinks-tools/discussions)
-
----
-
-## 中文
-
-本目录包含 [MyBacklinks](https://mybacklinks.app) 的开源软件包。
-
-### 软件包
-
-| 软件包 | 描述 | 适用场景 |
-|--------|------|----------|
-| [mybacklink-cli](./mybacklink-cli) | 官方 npm CLI 包 | 命令行自动化 |
-| [mybacklinks-mcp](./mybacklinks-mcp) | AI 助手 MCP 服务器 | 后端 API 集成 |
-| [skills/blog-commenter-skill](./skills/blog-commenter-skill) | 自动博客评论提交 | **博客**外链 |
-| [skills/backlink-submission-skill](./skills/backlink-submission-skill) | AI + 浏览器自动化 | **目录站/论坛/社交**外链 |
-| [skills/seo-research-skill](./skills/seo-research-skill) | 基于 CLI 的 SEO 研究工作流 | **域名指标 / 外链审计** |
-| [commands](./commands) | 统一工作流命令 | 流程编排 |
-
-### 技能选择指南
-
-| 资源类型 | 推荐技能 | 实现方式 |
-|---------|---------|---------|
-| `blog` 博客 | **blog-commenter-skill** | 脚本自动化 (WordPress, Ghost, Disqus) |
-| `directory` 目录站 | **backlink-submission-skill** | AI + 浏览器自动化 |
-| `forum` 论坛 | **backlink-submission-skill** | AI + 浏览器自动化 |
-| `social` 社交平台 | **backlink-submission-skill** | AI + 浏览器自动化 |
-| `other` 其他 | **backlink-submission-skill** | AI + 浏览器自动化 |
-
-### 快速开始
-
-#### 方式一：使用统一工作流
-
-参见 [commands/submit-backlinks.md](./commands/submit-backlinks.md)，该工作流会根据资源类型自动选择合适的技能。
-
-```
-/submit-backlinks aimcp.info
-/submit-backlinks lovemoney.app blog
-/submit-backlinks myproject.com directory
-```
-
-#### 方式二：直接使用技能
-
-**CLI SEO 研究：**
-```bash
-npm install -g @mybacklinks/cli
-mybacklinks login
-mybacklinks fetch-dr-by-domain --domain example.com
-```
-
-**博客评论：**
-```bash
-cd skills/blog-commenter-skill
-node submit-backlink.js \
-  --url "https://blog.example.com/post" \
-  --project "我的项目" \
-  --domain "myproject.com" \
-  --submit
-```
-
-**目录站/论坛提交：**
-```
-让 AI 执行："使用 backlink-submission-skill 提交目录站外链"
-```
-
-### 关于 MyBacklinks
-
-MyBacklinks 是一个专为独立开发者和副业项目构建者设计的综合外链管理平台。我们帮助你：
-
-- 📊 **管理项目**：在一个地方管理多个副业项目
-- 🔗 **管理外链**：跟踪已提交的外链、状态和锚文本
-- 📈 **监控 SEO**：分析域名评级、链接表现和提交历史
-- 🌐 **发现资源**：寻找高质量的外链机会网站
-
-### 贡献
-
-我们欢迎贡献！每个软件包都有自己的贡献指南。
-
-### CLI 发布（npm）
-
-- `release-please` 负责更新 `mybacklink-cli/package.json` 版本并创建 `cli-v*` tag。
-- `publish-cli.yml` 监听 `cli-v*` tag，自动发布 `@mybacklinks/cli` 到 npm。
-- 需要在仓库 Secrets 中配置：`NPM_TOKEN`。
-
-### 许可证
-
-所有软件包均以 MIT 许可证发布。
-
-### 链接
-
-- 🌐 [MyBacklinks 网站](https://mybacklinks.app)
-- 📚 [文档](https://docs.mybacklinks.app)
-- 📖 [MCP 设置指南](https://hekmon8.github.io/mybacklinks-tools) - GitHub Pages
-- 🐛 [报告问题](https://github.com/hekmon8/mybacklinks-tools/issues)
-- 💬 [讨论区](https://github.com/hekmon8/mybacklinks-tools/discussions)
