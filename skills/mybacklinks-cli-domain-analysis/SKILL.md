@@ -31,7 +31,7 @@ mybacklinks login --api-key <YOUR_API_KEY>
 mybacklinks status
 ```
 
-All commands accept `--json` for machine-readable output and `--base-url <url>` to target a different server.
+All commands return JSON by default. Use `--md` for Markdown output, and `--base-url <url>` to target a different server.
 
 ---
 

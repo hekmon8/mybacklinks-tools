@@ -29,8 +29,9 @@ mybacklinks fetch-traffic-by-domain --domain example.com
 
 ## Output
 
-- Default: human-readable output
-- `--json`: raw JSON output
+- Default: JSON output
+- `--json`: explicitly request JSON output
+- `--md`: Markdown output for agents and human review
 - `--base-url`: override API origin
 
 ## Auth storage
@@ -39,9 +40,9 @@ Credentials are stored at `~/.config/mybacklinks/credentials.json`.
 
 ## Release automation (GitHub Actions)
 
-- Versioning and tag generation: handled by `.github/workflows/release-please.yml`
 - npm publish trigger: `.github/workflows/publish-cli.yml`
 - Publish tag pattern: `cli-v*` (example: `cli-v0.2.0`)
+- Push a matching tag after bumping `mybacklink-cli/package.json`
 
 ### Required repository secrets
 

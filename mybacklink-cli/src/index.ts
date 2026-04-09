@@ -19,7 +19,7 @@ import {
 	requireCredentials,
 	saveCredentials,
 } from "./credentials.js";
-import { printOutput } from "./format.js";
+import { printOutput, resolveOutputFormat } from "./format.js";
 import { invokeTool, normalizeBaseUrl, validateCredentials } from "./http.js";
 import { loginWithOAuth } from "./oauth.js";
 import { USER_AGENT } from "./shared.js";
@@ -30,7 +30,7 @@ const updateCheck = startUpdateCheck();
 async function main() {
 	const parsed = parseArgv(process.argv.slice(2));
 	const commandName = parsed.command;
-	const json = getBooleanFlag(parsed.flags, "json");
+	const outputFormat = resolveOutputFormat(parsed.flags);
 	const baseUrl = getStringFlag(parsed.flags, "base-url");
 
 	if (!commandName || commandName === "help") {
@@ -81,7 +81,7 @@ async function main() {
 				authMode: credentials.authMode,
 				baseUrl: credentials.baseUrl,
 			},
-			json,
+			outputFormat,
 		);
 		return;
 	}
@@ -92,7 +92,7 @@ async function main() {
 			await revokeRemoteCredentials(credentials, baseUrl);
 			await deleteCredentials();
 		}
-		printOutput({ message: "Logged out successfully" }, json);
+		printOutput({ message: "Logged out successfully" }, outputFormat);
 		return;
 	}
 
@@ -112,7 +112,7 @@ async function main() {
 			baseUrl,
 			credentials,
 		});
-		printOutput(transformResult(commandName, allResults), json);
+		printOutput(transformResult(commandName, allResults), outputFormat);
 		return;
 	}
 
@@ -125,7 +125,7 @@ async function main() {
 
 	const transformed = transformResult(commandName, result);
 	printPaginationHint(commandName, result);
-	printOutput(transformed, json);
+	printOutput(transformed, outputFormat);
 }
 
 async function buildInput(
@@ -139,6 +139,10 @@ async function buildInput(
 			return compactObject({
 				limit: getNumberFlag(flags, "limit"),
 				cursor: getStringFlag(flags, "cursor"),
+				filter: compactObject({
+					name: getStringFlag(flags, "name"),
+					status: getStringFlag(flags, "status"),
+				}),
 			});
 		case "list-backlink-resources":
 			return compactObject({

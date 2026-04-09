@@ -80,8 +80,8 @@ MyBacklinks 是一个专为独立开发者和副业项目构建者设计的综�
 
 ## CLI 发布（npm）
 
-- `release-please` 负责更新 `mybacklink-cli/package.json` 版本并创建 `cli-v*` tag。
 - `publish-cli.yml` 监听 `cli-v*` tag，自动发布 [`@mybacklinks/cli`](https://www.npmjs.com/package/@mybacklinks/cli) 到 npm。
+- 发布流程：先更新 `mybacklink-cli/package.json` 版本，再 push 对应的 `cli-v*` tag。
 - 需要在仓库 Secrets 中配置：`NPM_TOKEN`。
 
 ## 许可证

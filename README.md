@@ -80,8 +80,8 @@ We welcome contributions! Each package has its own contributing guidelines.
 
 ## CLI Release (npm)
 
-- `release-please` updates `mybacklink-cli/package.json` version and creates `cli-v*` tags.
 - `publish-cli.yml` listens for `cli-v*` tags and publishes [`@mybacklinks/cli`](https://www.npmjs.com/package/@mybacklinks/cli) to npm.
+- Release flow: bump `mybacklink-cli/package.json`, then push a matching `cli-v*` tag.
 - Configure repository secret: `NPM_TOKEN`.
 
 ## License

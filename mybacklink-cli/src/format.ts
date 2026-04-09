@@ -8,13 +8,40 @@ function isPrimitive(value: unknown) {
 	);
 }
 
-export function printOutput(data: unknown, asJson: boolean) {
-	if (asJson) {
-		process.stdout.write(`${JSON.stringify(data, null, 2)}\n`);
-		return;
+export type OutputFormat = "json" | "md";
+
+function isEnabledFlag(value: string | boolean | undefined) {
+	if (value === true) {
+		return true;
 	}
 
-	process.stdout.write(formatMarkdown(data));
+	if (typeof value === "string") {
+		return ["1", "true", "yes", "on"].includes(value.toLowerCase());
+	}
+
+	return false;
+}
+
+export function resolveOutputFormat(
+	flags: Record<string, string | boolean>,
+): OutputFormat {
+	if (isEnabledFlag(flags.json) && isEnabledFlag(flags.md)) {
+		throw new Error("Options --json and --md cannot be used together.");
+	}
+
+	return isEnabledFlag(flags.md) ? "md" : "json";
+}
+
+export function renderOutput(data: unknown, format: OutputFormat): string {
+	if (format === "json") {
+		return `${JSON.stringify(data, null, 2)}\n`;
+	}
+
+	return formatMarkdown(data);
+}
+
+export function printOutput(data: unknown, format: OutputFormat) {
+	process.stdout.write(renderOutput(data, format));
 }
 
 function formatMarkdown(data: unknown, depth = 0): string {

@@ -19,7 +19,12 @@ const GLOBAL_PARAMS: ParamDef[] = [
 	{
 		name: "json",
 		type: "boolean",
-		description: "Output as JSON",
+		description: "Explicitly output as JSON (default)",
+	},
+	{
+		name: "md",
+		type: "boolean",
+		description: "Output as Markdown for agents and human review",
 	},
 	{
 		name: "base-url",
@@ -61,7 +66,7 @@ const commandDefinitions: CliCommandDefinition[] = [
 		toolName: "getStatus",
 		toolPath: "/api/mcp/tools/status/get",
 		description: "Show current auth mode, subscription summary, and credits",
-		examples: ["mybacklinks status", "mybacklinks status --json"],
+		examples: ["mybacklinks status", "mybacklinks status --md"],
 	},
 	{
 		name: "list-projects",
@@ -84,10 +89,22 @@ const commandDefinitions: CliCommandDefinition[] = [
 				type: "boolean",
 				description: "Fetch all pages automatically",
 			},
+			{
+				name: "name",
+				type: "string",
+				description: "Filter by project name (partial match)",
+			},
+			{
+				name: "status",
+				type: "string",
+				description: "Filter by project status (active, archived)",
+			},
 		],
 		examples: [
 			"mybacklinks list-projects",
 			"mybacklinks list-projects --limit 5",
+			"mybacklinks list-projects --name mysite",
+			"mybacklinks list-projects --status active",
 			"mybacklinks list-projects --all",
 		],
 	},
