@@ -7,6 +7,7 @@ import { normalizeBaseUrl } from "./http.js";
 import { CLIENT_ID, type TokenResponse, USER_AGENT } from "./shared.js";
 
 const CALLBACK_PATH = "/oauth/callback";
+const CALLBACK_HOST = "127.0.0.1";
 
 export async function loginWithOAuth(params: {
 	baseUrl?: string;
@@ -117,14 +118,14 @@ async function waitForAuthorizationCode(params: {
 				server.close();
 				resolve({
 					code,
-					redirectUri: `http://localhost:${address?.port ?? requestedPort ?? 0}${CALLBACK_PATH}`,
+					redirectUri: `http://${CALLBACK_HOST}:${address?.port ?? requestedPort ?? 0}${CALLBACK_PATH}`,
 				});
 			});
 
-			server.listen(requestedPort ?? 0, "127.0.0.1", async () => {
+			server.listen(requestedPort ?? 0, CALLBACK_HOST, async () => {
 				try {
 					const address = server.address() as AddressInfo;
-					const redirectUri = `http://localhost:${address.port}${CALLBACK_PATH}`;
+					const redirectUri = `http://${CALLBACK_HOST}:${address.port}${CALLBACK_PATH}`;
 					const authorizeUrl = new URL(`${baseUrl}/api/oauth/authorize`);
 					authorizeUrl.searchParams.set("client_id", CLIENT_ID);
 					authorizeUrl.searchParams.set("redirect_uri", redirectUri);
