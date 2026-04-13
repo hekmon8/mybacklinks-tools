@@ -485,12 +485,30 @@ const commandDefinitions: CliCommandDefinition[] = [
 			{
 				name: "limit",
 				type: "number",
-				description: "Max number of backlinks to return",
+				description:
+					"Max number of backlinks to return (max: 500). Increase this when summary.hasMore is true.",
+				defaultValue: "100",
+			},
+			{
+				name: "offset",
+				type: "number",
+				description:
+					"Starting offset for pagination. Use pagination.nextOffset from the previous response.",
+				defaultValue: "0",
+			},
+			{
+				name: "all",
+				type: "boolean",
+				description:
+					"Fetch all pages automatically using offset pagination. Each page consumes credits.",
 			},
 		],
 		examples: [
 			"mybacklinks fetch-backlinks-by-domain --domain example.com",
 			"mybacklinks fetch-backlinks-by-domain --domain example.com --dofollow --min-dr 30 --limit 50",
+			"mybacklinks fetch-backlinks-by-domain --domain example.com --limit 500 --json",
+			"mybacklinks fetch-backlinks-by-domain --domain example.com --offset 500 --limit 500",
+			"mybacklinks fetch-backlinks-by-domain --domain example.com --all --limit 500 --json",
 		],
 	},
 	{

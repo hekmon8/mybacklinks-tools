@@ -20,6 +20,7 @@ import {
 	saveCredentials,
 } from "./credentials.js";
 import { printOutput, resolveOutputFormat } from "./format.js";
+import { getCommandResultHint } from "./hints.js";
 import { invokeTool, normalizeBaseUrl, validateCredentials } from "./http.js";
 import { loginWithOAuth } from "./oauth.js";
 import { USER_AGENT } from "./shared.js";
@@ -125,6 +126,7 @@ async function main() {
 
 	const transformed = transformResult(commandName, result);
 	printPaginationHint(commandName, result);
+	printCommandResultHint(commandName, result);
 	printOutput(transformed, outputFormat);
 }
 
@@ -222,6 +224,7 @@ async function buildInput(
 				minDR: getNumberFlag(flags, "min-dr"),
 				anchorText: getStringFlag(flags, "anchor-text"),
 				limit: getNumberFlag(flags, "limit"),
+				offset: getNumberFlag(flags, "offset"),
 			});
 		case "fetch-dr-by-domain":
 		case "fetch-traffic-by-domain":
@@ -414,6 +417,7 @@ const PAGINATED_COMMANDS = new Set([
 	"list-projects",
 	"list-backlink-resources",
 	"fetch-project-backlinks",
+	"fetch-backlinks-by-domain",
 ]);
 
 function isPaginatedCommand(name: string) {
@@ -431,6 +435,10 @@ async function fetchAllPages(params: {
 	baseUrl?: string;
 	credentials: StoredCredentials;
 }): Promise<unknown> {
+	if (params.commandName === "fetch-backlinks-by-domain") {
+		return await fetchAllDomainBacklinkPages(params);
+	}
+
 	const allItems: unknown[] = [];
 	let cursor: string | undefined;
 	let pages = 0;
@@ -469,6 +477,93 @@ async function fetchAllPages(params: {
 	return { [listKey]: allItems, total: allItems.length };
 }
 
+async function fetchAllDomainBacklinkPages(params: {
+	commandName: string;
+	flags: Record<string, string | boolean>;
+	baseUrl?: string;
+	credentials: StoredCredentials;
+}): Promise<unknown> {
+	const backlinks: unknown[] = [];
+	const pageLimit = getNumberFlag(params.flags, "limit") ?? 500;
+	let nextOffset = getNumberFlag(params.flags, "offset") ?? 0;
+	let pages = 0;
+	let totalCreditCost = 0;
+	let latestResult: Record<string, unknown> | null = null;
+	let finalHasMore = false;
+
+	while (pages < 100) {
+		const flagsCopy: Record<string, string | boolean> = {
+			...params.flags,
+			limit: String(pageLimit),
+			offset: String(nextOffset),
+		};
+		delete flagsCopy.all;
+
+		const input = await buildInput(params.commandName, flagsCopy);
+		const result = (await invokeTool({
+			commandName: params.commandName,
+			input,
+			baseUrl: params.baseUrl,
+			credentials: params.credentials,
+		})) as Record<string, unknown> | null;
+
+		if (!result || typeof result !== "object") break;
+		latestResult = result;
+
+		if (Array.isArray(result.backlinks)) {
+			backlinks.push(...result.backlinks);
+		}
+		if (typeof result.creditCost === "number") {
+			totalCreditCost += result.creditCost;
+		}
+
+		const pagination = isRecord(result.pagination) ? result.pagination : null;
+		const summary = isRecord(result.summary) ? result.summary : null;
+		finalHasMore = summary?.hasMore === true;
+		const candidateNextOffset =
+			typeof pagination?.nextOffset === "number"
+				? pagination.nextOffset
+				: undefined;
+
+		pages += 1;
+		if (
+			!finalHasMore ||
+			candidateNextOffset === undefined ||
+			candidateNextOffset <= nextOffset
+		) {
+			break;
+		}
+
+		nextOffset = candidateNextOffset;
+	}
+
+	if (!latestResult) {
+		return { backlinks: [], total: 0 };
+	}
+
+	const latestSummary = isRecord(latestResult.summary)
+		? latestResult.summary
+		: {};
+	const latestPagination = isRecord(latestResult.pagination)
+		? latestResult.pagination
+		: {};
+
+	return {
+		...latestResult,
+		backlinks,
+		summary: {
+			...latestSummary,
+			returnedCount: backlinks.length,
+			hasMore: finalHasMore,
+		},
+		pagination: {
+			...latestPagination,
+			offset: getNumberFlag(params.flags, "offset") ?? 0,
+		},
+		creditCost: totalCreditCost,
+	};
+}
+
 function getListKey(commandName: string) {
 	switch (commandName) {
 		case "list-projects":
@@ -483,6 +578,7 @@ function getListKey(commandName: string) {
 }
 
 function printPaginationHint(commandName: string, result: unknown) {
+	if (commandName === "fetch-backlinks-by-domain") return;
 	if (!isPaginatedCommand(commandName)) return;
 	if (!result || typeof result !== "object") return;
 
@@ -499,6 +595,13 @@ function printPaginationHint(commandName: string, result: unknown) {
 		);
 	} else {
 		process.stderr.write(`\nShowing all ${count} items.\n`);
+	}
+}
+
+function printCommandResultHint(commandName: string, result: unknown) {
+	const hint = getCommandResultHint(commandName, result);
+	if (hint) {
+		process.stderr.write(`\n${hint}\n`);
 	}
 }
 

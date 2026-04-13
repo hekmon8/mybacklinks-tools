@@ -122,7 +122,9 @@ mybacklinks fetch-backlinks-by-domain --domain <domain> [options]
 | `--dofollow` | No | boolean | Only return dofollow links |
 | `--min-dr` | No | number | Minimum referring-domain DR |
 | `--anchor-text` | No | string | Filter by anchor text substring |
-| `--limit` | No | number | Max backlinks to return |
+| `--limit` | No | number | Max backlinks to return. Default: 100. Max: 500. Increase this when `summary.hasMore` is true. |
+| `--offset` | No | number | Starting offset for pagination. Use `pagination.nextOffset` from the previous response. |
+| `--all` | No | boolean | Fetch all pages automatically using offset pagination. Each page consumes credits. |
 
 **Examples:**
 
@@ -133,8 +135,14 @@ mybacklinks fetch-backlinks-by-domain --domain competitor.com
 # Only high-quality dofollow links
 mybacklinks fetch-backlinks-by-domain --domain competitor.com --dofollow --min-dr 30
 
-# Limit results and output JSON
-mybacklinks fetch-backlinks-by-domain --domain competitor.com --limit 50 --json
+# Fetch more results when summary.hasMore is true
+mybacklinks fetch-backlinks-by-domain --domain competitor.com --limit 500 --json
+
+# Fetch the next page using pagination.nextOffset
+mybacklinks fetch-backlinks-by-domain --domain competitor.com --offset 500 --limit 500 --json
+
+# Fetch all pages automatically
+mybacklinks fetch-backlinks-by-domain --domain competitor.com --all --limit 500 --json
 
 # Search for specific anchor
 mybacklinks fetch-backlinks-by-domain --domain competitor.com --anchor-text "best tools"
@@ -148,7 +156,7 @@ mybacklinks fetch-backlinks-by-domain --domain competitor.com --anchor-text "bes
 
 1. Identify competitor domains.
 2. For each competitor, run `fetch-dr-by-domain` and `fetch-traffic-by-domain` to benchmark.
-3. Run `fetch-backlinks-by-domain --dofollow --min-dr 20` to find high-quality referring domains.
+3. Run `fetch-backlinks-by-domain --dofollow --min-dr 20 --limit 500` to find high-quality referring domains. If the response shows `summary.hasMore`, continue with `--offset <pagination.nextOffset>` or use `--all --limit 500`.
 4. Cross-reference referring domains across competitors to find common link sources you're missing.
 
 ### Domain Qualification for Outreach

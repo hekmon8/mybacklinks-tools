@@ -22,9 +22,29 @@ mybacklinks status
 mybacklinks list-projects
 mybacklinks fetch-project-info --project-id <id>
 mybacklinks fetch-project-backlinks --project-id <id> --status indexed
-mybacklinks fetch-backlinks-by-domain --domain example.com --limit 50
+mybacklinks fetch-backlinks-by-domain --domain example.com --limit 500
 mybacklinks fetch-dr-by-domain --domain example.com
 mybacklinks fetch-traffic-by-domain --domain example.com
+```
+
+### Fetch more domain backlinks
+
+`fetch-backlinks-by-domain` returns 100 backlinks by default. If the response
+summary shows `hasMore: true`, re-run the command with a higher `--limit`, up to
+500 per request:
+
+```bash
+mybacklinks fetch-backlinks-by-domain --domain example.com --limit 452 --json
+mybacklinks fetch-backlinks-by-domain --domain example.com --limit 500 --json
+```
+
+For domains with more than 500 backlinks, use `pagination.nextOffset` from the
+previous response, or let the CLI fetch every page. Each page request consumes
+credits.
+
+```bash
+mybacklinks fetch-backlinks-by-domain --domain example.com --offset 500 --limit 500 --json
+mybacklinks fetch-backlinks-by-domain --domain example.com --all --limit 500 --json
 ```
 
 ## Output
