@@ -160,10 +160,10 @@ async function buildInput(
 		case "add-backlink-resource":
 			return compactObject({
 				domain: requiredString(flags, "domain"),
-				type: requiredString(flags, "type"),
+				type: getStringFlag(flags, "type") ?? "directory",
 				submissionUrl: getStringFlag(flags, "submission-url"),
-				paymentType: getStringFlag(flags, "payment-type"),
-				submissionMethod: getStringFlag(flags, "submission-method"),
+				paymentType: getStringFlag(flags, "payment-type") ?? "free",
+				submissionMethod: getStringFlag(flags, "submission-method") ?? "form",
 				howToSubmit: getStringFlag(flags, "how-to-submit"),
 				dr: getNumberFlag(flags, "dr"),
 				traffic: getNumberFlag(flags, "traffic"),

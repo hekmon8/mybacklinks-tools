@@ -171,8 +171,8 @@ const commandDefinitions: CliCommandDefinition[] = [
 			{
 				name: "type",
 				type: "string",
-				required: true,
 				description: "Resource type (e.g. guest_post, directory, forum)",
+				defaultValue: "directory",
 			},
 			{
 				name: "submission-url",
@@ -183,11 +183,13 @@ const commandDefinitions: CliCommandDefinition[] = [
 				name: "payment-type",
 				type: "string",
 				description: "Payment type (e.g. free, paid, exchange)",
+				defaultValue: "free",
 			},
 			{
 				name: "submission-method",
 				type: "string",
 				description: "How to submit (e.g. form, email, api)",
+				defaultValue: "form",
 			},
 			{
 				name: "how-to-submit",

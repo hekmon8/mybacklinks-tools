@@ -7,6 +7,8 @@ import {
 	USER_AGENT,
 } from "./shared.js";
 
+const DEFAULT_REQUEST_TIMEOUT_MS = 120_000;
+
 type ToolSuccessResponse = {
 	requestId: string;
 	data: unknown;
@@ -58,7 +60,7 @@ export async function invokeTool(params: {
 
 	const response = await fetch(`${resolvedBaseUrl}${definition.toolPath}`, {
 		method: "POST",
-		signal: AbortSignal.timeout(30_000),
+		signal: AbortSignal.timeout(DEFAULT_REQUEST_TIMEOUT_MS),
 		headers: {
 			"content-type": "application/json",
 			authorization: `Bearer ${getBearerToken(credentials)}`,
@@ -74,12 +76,46 @@ export async function invokeTool(params: {
 	})) as ToolSuccessResponse & ToolErrorResponse;
 
 	if (!response.ok) {
-		throw new Error(
-			payload.error?.message || `Command failed (status ${response.status}).`,
-		);
+		throw new Error(formatToolErrorMessage(response.status, payload));
 	}
 
 	return payload.data;
+}
+
+export function formatToolErrorMessage(
+	status: number,
+	payload: ToolErrorResponse,
+) {
+	const base = payload.error?.message || `Command failed (status ${status}).`;
+	const details = formatValidationDetails(payload.error?.details);
+	return details ? `${base}: ${details}` : base;
+}
+
+function formatValidationDetails(details: unknown) {
+	if (!details || typeof details !== "object") {
+		return undefined;
+	}
+
+	const record = details as Record<string, unknown>;
+	const fieldErrors = record.fieldErrors;
+	const parts: string[] = [];
+
+	if (fieldErrors && typeof fieldErrors === "object") {
+		for (const [field, messages] of Object.entries(
+			fieldErrors as Record<string, unknown>,
+		)) {
+			if (!Array.isArray(messages) || messages.length === 0) {
+				continue;
+			}
+			parts.push(`${field}: ${messages.join(", ")}`);
+		}
+	}
+
+	if (Array.isArray(record.formErrors) && record.formErrors.length > 0) {
+		parts.push(record.formErrors.join(", "));
+	}
+
+	return parts.length > 0 ? parts.join("; ") : undefined;
 }
 
 async function ensureFreshCredentials(
