@@ -224,6 +224,124 @@ const commandDefinitions: CliCommandDefinition[] = [
 		],
 	},
 	{
+		name: "get-backlink-resource",
+		toolName: "getBacklinkResourceDetail",
+		toolPath: "/api/mcp/tools/link-resources/get",
+		description: "Fetch full details for a single backlink resource",
+		params: [
+			{
+				name: "id",
+				type: "string",
+				required: true,
+				description: "Backlink resource ID",
+			},
+		],
+		examples: ["mybacklinks get-backlink-resource --id res_abc --json"],
+	},
+	{
+		name: "discover-backlink-opportunities",
+		toolName: "discoverBacklinkOpportunities",
+		toolPath: "/api/mcp/tools/link-resources/available",
+		description: "Discover unused backlink resources for a project",
+		params: [
+			{
+				name: "project-id",
+				type: "string",
+				description: "Project ID (provide this or --domain)",
+			},
+			{
+				name: "domain",
+				type: "string",
+				description: "Project domain (provide this or --project-id)",
+			},
+			{
+				name: "limit",
+				type: "number",
+				description: "Max number of resources to return per page",
+			},
+			{
+				name: "cursor",
+				type: "string",
+				description: "Pagination cursor from a previous response",
+			},
+			{
+				name: "all",
+				type: "boolean",
+				description: "Fetch all pages automatically",
+			},
+			{
+				name: "type",
+				type: "string",
+				description: "Filter by resource type (blog, directory, forum, social, other)",
+			},
+			{
+				name: "payment-type",
+				type: "string",
+				description: "Filter by payment type",
+			},
+			{
+				name: "dr-min",
+				type: "number",
+				description: "Minimum domain rating filter",
+			},
+			{
+				name: "dr-max",
+				type: "number",
+				description: "Maximum domain rating filter",
+			},
+		],
+		examples: [
+			"mybacklinks discover-backlink-opportunities --project-id proj_abc --payment-type free --limit 10 --json",
+			"mybacklinks discover-backlink-opportunities --domain example.com --type directory --all",
+		],
+	},
+	{
+		name: "plan-backlink-submissions",
+		toolName: "planBacklinkSubmissions",
+		toolPath: "/api/mcp/tools/link-resources/plan-submissions",
+		description:
+			"Build compact candidate packets for agent-assisted backlink submissions",
+		params: [
+			{
+				name: "project-id",
+				type: "string",
+				description: "Project ID (provide this or --domain)",
+			},
+			{
+				name: "domain",
+				type: "string",
+				description: "Project domain (provide this or --project-id)",
+			},
+			{
+				name: "status",
+				type: "string",
+				description: "Project backlink status to plan from",
+				defaultValue: "pending",
+			},
+			{
+				name: "payment-type",
+				type: "string",
+				description: "Resource payment type",
+				defaultValue: "free",
+			},
+			{
+				name: "type",
+				type: "string",
+				description: "Filter by resource type (blog, directory, forum, social, other)",
+			},
+			{
+				name: "limit",
+				type: "number",
+				description: "Max candidate packets to return (max: 10)",
+				defaultValue: "10",
+			},
+		],
+		examples: [
+			"mybacklinks plan-backlink-submissions --project-id proj_abc --limit 10 --json",
+			"mybacklinks plan-backlink-submissions --domain example.com --type directory --payment-type free --json",
+		],
+	},
+	{
 		name: "update-backlink-resource",
 		toolName: "updateBacklinkResource",
 		toolPath: "/api/mcp/tools/link-resources/update",
@@ -330,6 +448,16 @@ const commandDefinitions: CliCommandDefinition[] = [
 				name: "url",
 				type: "string",
 				description: "New project URL",
+			},
+			{
+				name: "contact-email",
+				type: "string",
+				description: "Single project contact email for submission forms",
+			},
+			{
+				name: "contact-emails",
+				type: "string",
+				description: "Comma-separated project contact emails",
 			},
 			{
 				name: "status",

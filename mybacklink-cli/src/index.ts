@@ -187,6 +187,32 @@ async function buildInput(
 				traffic: getNumberFlag(flags, "traffic"),
 				notes: getStringFlag(flags, "notes"),
 			});
+		case "get-backlink-resource":
+			return {
+				id: requiredString(flags, "id"),
+			};
+		case "discover-backlink-opportunities":
+			return compactObject({
+				projectId: getStringFlag(flags, "project-id"),
+				domain: getStringFlag(flags, "domain"),
+				limit: getNumberFlag(flags, "limit"),
+				cursor: getStringFlag(flags, "cursor"),
+				filter: compactObject({
+					type: getResourceTypeFlag(flags, "type"),
+					payment: getStringFlag(flags, "payment-type"),
+					drMin: getNumberFlag(flags, "dr-min"),
+					drMax: getNumberFlag(flags, "dr-max"),
+				}),
+			});
+		case "plan-backlink-submissions":
+			return compactObject({
+				projectId: getStringFlag(flags, "project-id"),
+				domain: getStringFlag(flags, "domain"),
+				status: getStringFlag(flags, "status"),
+				paymentType: getStringFlag(flags, "payment-type"),
+				type: getResourceTypeFlag(flags, "type"),
+				limit: getNumberFlag(flags, "limit"),
+			});
 		case "update-backlink-resource":
 			return compactObject({
 				id: requiredString(flags, "id"),
@@ -210,6 +236,7 @@ async function buildInput(
 				name: getStringFlag(flags, "name"),
 				description: getStringFlag(flags, "description"),
 				url: getStringFlag(flags, "url"),
+				contactEmails: getContactEmailsFlag(flags),
 				status: getStringFlag(flags, "status"),
 			});
 
@@ -431,6 +458,20 @@ function getNullableNumberFlag(
 	return Number.isFinite(parsed) ? parsed : undefined;
 }
 
+function getContactEmailsFlag(
+	flags: Record<string, string | boolean>,
+): string[] | undefined {
+	const single = getStringFlag(flags, "contact-email");
+	const multiple = getStringFlag(flags, "contact-emails");
+	const raw = multiple ?? single;
+	if (!raw) return undefined;
+
+	return raw
+		.split(",")
+		.map((email) => email.trim())
+		.filter(Boolean);
+}
+
 function compactObject<T extends Record<string, unknown>>(value: T) {
 	return Object.fromEntries(
 		Object.entries(value).filter(([, item]) => item !== undefined),
@@ -489,6 +530,8 @@ function validateRequiredParams(
 	const atLeastOneOf: Record<string, string[]> = {
 		"fetch-project-info": ["project-id", "domain"],
 		"fetch-project-backlinks": ["project-id", "domain", "url"],
+		"discover-backlink-opportunities": ["project-id", "domain"],
+		"plan-backlink-submissions": ["project-id", "domain"],
 	};
 
 	const group = atLeastOneOf[commandName];
@@ -502,6 +545,7 @@ function validateRequiredParams(
 const PAGINATED_COMMANDS = new Set([
 	"list-projects",
 	"list-backlink-resources",
+	"discover-backlink-opportunities",
 	"fetch-project-backlinks",
 	"fetch-backlinks-by-domain",
 ]);
@@ -661,6 +705,8 @@ function getListKey(commandName: string) {
 		case "list-projects":
 			return "projects";
 		case "list-backlink-resources":
+			return "resources";
+		case "discover-backlink-opportunities":
 			return "resources";
 		case "fetch-project-backlinks":
 			return "backlinks";
