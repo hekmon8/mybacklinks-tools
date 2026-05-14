@@ -204,15 +204,6 @@ async function buildInput(
 					drMax: getNumberFlag(flags, "dr-max"),
 				}),
 			});
-		case "plan-backlink-submissions":
-			return compactObject({
-				projectId: getStringFlag(flags, "project-id"),
-				domain: getStringFlag(flags, "domain"),
-				status: getStringFlag(flags, "status"),
-				paymentType: getStringFlag(flags, "payment-type"),
-				type: getResourceTypeFlag(flags, "type"),
-				limit: getNumberFlag(flags, "limit"),
-			});
 		case "update-backlink-resource":
 			return compactObject({
 				id: requiredString(flags, "id"),
@@ -531,7 +522,6 @@ function validateRequiredParams(
 		"fetch-project-info": ["project-id", "domain"],
 		"fetch-project-backlinks": ["project-id", "domain", "url"],
 		"discover-backlink-opportunities": ["project-id", "domain"],
-		"plan-backlink-submissions": ["project-id", "domain"],
 	};
 
 	const group = atLeastOneOf[commandName];

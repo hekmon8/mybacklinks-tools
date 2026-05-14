@@ -296,52 +296,6 @@ const commandDefinitions: CliCommandDefinition[] = [
 		],
 	},
 	{
-		name: "plan-backlink-submissions",
-		toolName: "planBacklinkSubmissions",
-		toolPath: "/api/mcp/tools/link-resources/plan-submissions",
-		description:
-			"Build compact candidate packets for agent-assisted backlink submissions",
-		params: [
-			{
-				name: "project-id",
-				type: "string",
-				description: "Project ID (provide this or --domain)",
-			},
-			{
-				name: "domain",
-				type: "string",
-				description: "Project domain (provide this or --project-id)",
-			},
-			{
-				name: "status",
-				type: "string",
-				description: "Project backlink status to plan from",
-				defaultValue: "pending",
-			},
-			{
-				name: "payment-type",
-				type: "string",
-				description: "Resource payment type",
-				defaultValue: "free",
-			},
-			{
-				name: "type",
-				type: "string",
-				description: "Filter by resource type (blog, directory, forum, social, other)",
-			},
-			{
-				name: "limit",
-				type: "number",
-				description: "Max candidate packets to return (max: 10)",
-				defaultValue: "10",
-			},
-		],
-		examples: [
-			"mybacklinks plan-backlink-submissions --project-id proj_abc --limit 10 --json",
-			"mybacklinks plan-backlink-submissions --domain example.com --type directory --payment-type free --json",
-		],
-	},
-	{
 		name: "update-backlink-resource",
 		toolName: "updateBacklinkResource",
 		toolPath: "/api/mcp/tools/link-resources/update",

@@ -26,7 +26,6 @@ mybacklinks fetch-project-backlinks --project-id <id> --status indexed
 mybacklinks fetch-project-backlinks --domain example.com --all --json
 mybacklinks get-backlink-resource --id <resource-id> --json
 mybacklinks discover-backlink-opportunities --project-id <id> --payment-type free --limit 10 --json
-mybacklinks plan-backlink-submissions --project-id <id> --limit 10 --json
 mybacklinks fetch-backlinks-by-domain --domain example.com --limit 500
 mybacklinks fetch-dr-by-domain --domain example.com
 mybacklinks fetch-traffic-by-domain --domain example.com
