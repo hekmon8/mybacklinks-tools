@@ -34,6 +34,17 @@ async function main() {
 	const outputFormat = resolveOutputFormat(parsed.flags);
 	const baseUrl = getStringFlag(parsed.flags, "base-url");
 
+	if (commandName === "version" || getBooleanFlag(parsed.flags, "version")) {
+		printOutput(
+			{
+				name: "@mybacklinks/cli",
+				version: "0.1.4",
+			},
+			outputFormat,
+		);
+		return;
+	}
+
 	if (!commandName || commandName === "help") {
 		renderHelp();
 		return;
@@ -104,7 +115,10 @@ async function main() {
 
 	const credentials = await requireCredentials();
 	validateRequiredParams(commandName, parsed.flags);
-	const input = await buildInput(commandName, parsed.flags);
+	const input = await buildInput(commandName, parsed.flags, {
+		baseUrl,
+		credentials,
+	});
 
 	if (isPaginatedCommand(commandName) && getBooleanFlag(parsed.flags, "all")) {
 		const allResults = await fetchAllPages({
@@ -133,6 +147,10 @@ async function main() {
 async function buildInput(
 	commandName: string,
 	flags: Record<string, string | boolean>,
+	context?: {
+		baseUrl?: string;
+		credentials: StoredCredentials;
+	},
 ): Promise<Record<string, unknown>> {
 	switch (commandName) {
 		case "status":
@@ -151,7 +169,7 @@ async function buildInput(
 				limit: getNumberFlag(flags, "limit"),
 				cursor: getStringFlag(flags, "cursor"),
 				filter: compactObject({
-					type: getStringFlag(flags, "type"),
+					type: getResourceTypeFlag(flags, "type"),
 					payment: getStringFlag(flags, "payment-type"),
 					drMin: getNumberFlag(flags, "dr-min"),
 					drMax: getNumberFlag(flags, "dr-max"),
@@ -160,7 +178,7 @@ async function buildInput(
 		case "add-backlink-resource":
 			return compactObject({
 				domain: requiredString(flags, "domain"),
-				type: getStringFlag(flags, "type") ?? "directory",
+				type: getResourceTypeFlag(flags, "type") ?? "directory",
 				submissionUrl: getStringFlag(flags, "submission-url"),
 				paymentType: getStringFlag(flags, "payment-type") ?? "free",
 				submissionMethod: getStringFlag(flags, "submission-method") ?? "form",
@@ -173,7 +191,7 @@ async function buildInput(
 			return compactObject({
 				id: requiredString(flags, "id"),
 				submissionUrl: getStringFlag(flags, "submission-url"),
-				type: getStringFlag(flags, "type"),
+				type: getResourceTypeFlag(flags, "type"),
 				paymentType: getStringFlag(flags, "payment-type"),
 				submissionMethod: getNullableStringFlag(flags, "submission-method"),
 				howToSubmit: getNullableStringFlag(flags, "how-to-submit"),
@@ -205,7 +223,7 @@ async function buildInput(
 		}
 		case "fetch-project-backlinks":
 			return compactObject({
-				projectId: requiredString(flags, "project-id"),
+				projectId: await resolveProjectIdForBacklinks(flags, context),
 				status: getStringFlag(flags, "status"),
 				resourceDomain: getStringFlag(flags, "resource-domain"),
 				anchorText: getStringFlag(flags, "anchor-text"),
@@ -325,6 +343,73 @@ function requiredString(flags: Record<string, string | boolean>, name: string) {
 	return value;
 }
 
+async function resolveProjectIdForBacklinks(
+	flags: Record<string, string | boolean>,
+	context?: {
+		baseUrl?: string;
+		credentials: StoredCredentials;
+	},
+) {
+	const projectId = getStringFlag(flags, "project-id");
+	if (projectId) {
+		return projectId;
+	}
+
+	const domain = getStringFlag(flags, "domain") ?? getStringFlag(flags, "url");
+	if (!domain) {
+		throw new Error(
+			"Missing required option: provide --project-id, --domain, or --url",
+		);
+	}
+	if (!context) {
+		throw new Error("Cannot resolve project domain without credentials.");
+	}
+
+	const project = await invokeTool({
+		commandName: "fetch-project-info",
+		input: { domain },
+		baseUrl: context.baseUrl,
+		credentials: context.credentials,
+	});
+
+	if (!isRecord(project) || typeof project.id !== "string") {
+		throw new Error(`Could not resolve project for ${domain}.`);
+	}
+
+	return project.id;
+}
+
+function getResourceTypeFlag(
+	flags: Record<string, string | boolean>,
+	name: string,
+) {
+	const value = getStringFlag(flags, name);
+	return value ? normalizeResourceType(value) : undefined;
+}
+
+function normalizeResourceType(value: string) {
+	const normalized = value.trim().toLowerCase().replace(/[-\s]+/g, "_");
+	const aliases: Record<string, string> = {
+		guest_post: "blog",
+		guestpost: "blog",
+		article: "blog",
+		review: "other",
+		deal: "other",
+		coupon: "other",
+		community: "social",
+		social_media: "social",
+	};
+	const type = aliases[normalized] ?? normalized;
+	const allowed = new Set(["blog", "directory", "forum", "social", "other"]);
+	if (!allowed.has(type)) {
+		throw new Error(
+			`Invalid resource type "${value}". Use one of: blog, directory, forum, social, other.`,
+		);
+	}
+
+	return type;
+}
+
 function getNullableStringFlag(
 	flags: Record<string, string | boolean>,
 	name: string,
@@ -403,6 +488,7 @@ function validateRequiredParams(
 	// Commands that need at least one of a set of params
 	const atLeastOneOf: Record<string, string[]> = {
 		"fetch-project-info": ["project-id", "domain"],
+		"fetch-project-backlinks": ["project-id", "domain", "url"],
 	};
 
 	const group = atLeastOneOf[commandName];
@@ -450,7 +536,10 @@ async function fetchAllPages(params: {
 		}
 		delete flagsCopy.all;
 
-		const input = await buildInput(params.commandName, flagsCopy);
+		const input = await buildInput(params.commandName, flagsCopy, {
+			baseUrl: params.baseUrl,
+			credentials: params.credentials,
+		});
 		const result = (await invokeTool({
 			commandName: params.commandName,
 			input,
@@ -499,7 +588,10 @@ async function fetchAllDomainBacklinkPages(params: {
 		};
 		delete flagsCopy.all;
 
-		const input = await buildInput(params.commandName, flagsCopy);
+		const input = await buildInput(params.commandName, flagsCopy, {
+			baseUrl: params.baseUrl,
+			credentials: params.credentials,
+		});
 		const result = (await invokeTool({
 			commandName: params.commandName,
 			input,

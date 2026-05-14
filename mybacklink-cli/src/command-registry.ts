@@ -69,6 +69,11 @@ const commandDefinitions: CliCommandDefinition[] = [
 		examples: ["mybacklinks status", "mybacklinks status --md"],
 	},
 	{
+		name: "version",
+		description: "Show the installed CLI version",
+		examples: ["mybacklinks version", "mybacklinks --version"],
+	},
+	{
 		name: "list-projects",
 		toolName: "listProjects",
 		toolPath: "/api/mcp/tools/projects/list",
@@ -132,7 +137,7 @@ const commandDefinitions: CliCommandDefinition[] = [
 			{
 				name: "type",
 				type: "string",
-				description: "Filter by resource type",
+				description: "Filter by resource type (blog, directory, forum, social, other)",
 			},
 			{
 				name: "payment-type",
@@ -152,7 +157,7 @@ const commandDefinitions: CliCommandDefinition[] = [
 		],
 		examples: [
 			"mybacklinks list-backlink-resources",
-			"mybacklinks list-backlink-resources --type guest_post --dr-min 30",
+			"mybacklinks list-backlink-resources --type blog --dr-min 30",
 			"mybacklinks list-backlink-resources --all",
 		],
 	},
@@ -171,7 +176,8 @@ const commandDefinitions: CliCommandDefinition[] = [
 			{
 				name: "type",
 				type: "string",
-				description: "Resource type (e.g. guest_post, directory, forum)",
+				description:
+					"Resource type (blog, directory, forum, social, other). Common aliases like guest_post, review, and deal are normalized.",
 				defaultValue: "directory",
 			},
 			{
@@ -182,7 +188,7 @@ const commandDefinitions: CliCommandDefinition[] = [
 			{
 				name: "payment-type",
 				type: "string",
-				description: "Payment type (e.g. free, paid, exchange)",
+				description: "Payment type (free, paid, freemium)",
 				defaultValue: "free",
 			},
 			{
@@ -213,7 +219,7 @@ const commandDefinitions: CliCommandDefinition[] = [
 			},
 		],
 		examples: [
-			"mybacklinks add-backlink-resource --domain blog.example.com --type guest_post",
+			"mybacklinks add-backlink-resource --domain blog.example.com --type blog",
 			"mybacklinks add-backlink-resource --domain dir.example.com --type directory --payment-type free --dr 45",
 		],
 	},
@@ -237,7 +243,8 @@ const commandDefinitions: CliCommandDefinition[] = [
 			{
 				name: "type",
 				type: "string",
-				description: "Updated resource type",
+				description:
+					"Updated resource type (blog, directory, forum, social, other). Common aliases are normalized.",
 			},
 			{
 				name: "payment-type",
@@ -344,8 +351,17 @@ const commandDefinitions: CliCommandDefinition[] = [
 			{
 				name: "project-id",
 				type: "string",
-				required: true,
-				description: "Project ID",
+				description: "Project ID (provide this, --domain, or --url)",
+			},
+			{
+				name: "domain",
+				type: "string",
+				description: "Resolve project backlinks by project domain",
+			},
+			{
+				name: "url",
+				type: "string",
+				description: "Resolve project backlinks by project URL",
 			},
 			{
 				name: "status",
@@ -385,6 +401,7 @@ const commandDefinitions: CliCommandDefinition[] = [
 		],
 		examples: [
 			"mybacklinks fetch-project-backlinks --project-id proj_abc",
+			"mybacklinks fetch-project-backlinks --domain example.com --all --json",
 			"mybacklinks fetch-project-backlinks --project-id proj_abc --status indexed --limit 20",
 			"mybacklinks fetch-project-backlinks --project-id proj_abc --all",
 		],
@@ -456,7 +473,8 @@ const commandDefinitions: CliCommandDefinition[] = [
 		name: "fetch-backlinks-by-domain",
 		toolName: "getDomainBacklinks",
 		toolPath: "/api/mcp/tools/domain-backlinks/discover",
-		description: "Fetch discovered backlinks for any domain",
+		description:
+			"Fetch raw provider-discovered backlinks for any domain, not tracked MyBacklinks project records",
 		params: [
 			{
 				name: "domain",

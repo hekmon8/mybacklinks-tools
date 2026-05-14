@@ -49,8 +49,8 @@ mybacklinks list-backlink-resources [options]
 | `--limit` | No | number | Max resources per page |
 | `--cursor` | No | string | Pagination cursor from previous response |
 | `--all` | No | boolean | Auto-paginate through all results |
-| `--type` | No | string | Filter by type (`directory`, `guest_post`, `forum`, `blog`, `social`, etc.) |
-| `--payment-type` | No | string | Filter by payment (`free`, `paid`, `exchange`) |
+| `--type` | No | string | Filter by type (`blog`, `directory`, `forum`, `social`, `other`) |
+| `--payment-type` | No | string | Filter by payment (`free`, `paid`, `freemium`) |
 | `--dr-min` | No | number | Minimum domain rating |
 | `--dr-max` | No | number | Maximum domain rating |
 
@@ -67,7 +67,7 @@ mybacklinks list-backlink-resources --type directory --payment-type free --dr-mi
 mybacklinks list-backlink-resources --all --json
 
 # Guest post sites with moderate authority
-mybacklinks list-backlink-resources --type guest_post --dr-min 20 --dr-max 60
+mybacklinks list-backlink-resources --type blog --dr-min 20 --dr-max 60
 ```
 
 **Typical response fields per resource:**
@@ -76,7 +76,7 @@ mybacklinks list-backlink-resources --type guest_post --dr-min 20 --dr-max 60
 |-------|-------------|
 | `id` | Unique resource ID |
 | `domain` | Resource domain |
-| `type` | Resource type (directory, guest_post, forum, blog, social) |
+| `type` | Resource type (`blog`, `directory`, `forum`, `social`, `other`) |
 | `submissionMethod` | How to submit (form, email, api, Auto Approval) |
 | `howToSubmit` | Human-readable submission instructions |
 | `priceType` | Payment model (free, paid, exchange) |
@@ -99,9 +99,9 @@ mybacklinks add-backlink-resource --domain <domain> --type <type> [options]
 | Option | Required | Type | Description |
 |--------|----------|------|-------------|
 | `--domain` | Yes | string | Domain of the resource |
-| `--type` | Yes | string | Resource type (`guest_post`, `directory`, `forum`, `blog`, `social`) |
+| `--type` | Yes | string | Resource type (`blog`, `directory`, `forum`, `social`, `other`) |
 | `--submission-url` | No | string | URL for submitting content |
-| `--payment-type` | No | string | Payment model (`free`, `paid`, `exchange`) |
+| `--payment-type` | No | string | Payment model (`free`, `paid`, `freemium`) |
 | `--submission-method` | No | string | Submission method (`form`, `email`, `api`) |
 | `--how-to-submit` | No | string | Human-readable submission instructions |
 | `--dr` | No | number | Domain rating (0–100) |
@@ -117,7 +117,7 @@ mybacklinks add-backlink-resource --domain producthunt.com --type directory
 # Full metadata
 mybacklinks add-backlink-resource \
   --domain blog.example.com \
-  --type guest_post \
+  --type blog \
   --payment-type free \
   --submission-method email \
   --how-to-submit "Email editor@example.com with pitch and draft" \
@@ -205,7 +205,7 @@ mybacklinks update-backlink-resource --id f64956f7-659a-44fc-8301-3f05e43eb816 -
 
 ```bash
 # High-authority free guest post opportunities
-mybacklinks list-backlink-resources --type guest_post --payment-type free --dr-min 30 --json
+mybacklinks list-backlink-resources --type blog --payment-type free --dr-min 30 --json
 
 # All directories sorted by the API's default ordering
 mybacklinks list-backlink-resources --type directory --all --json
@@ -218,9 +218,9 @@ mybacklinks list-backlink-resources --type directory --all --json
 | Type | Description |
 |------|-------------|
 | `directory` | Product/tool directory or listing site |
-| `guest_post` | Blog or publication accepting guest articles |
+| `blog` | Blog or publication accepting guest articles |
 | `forum` | Forum or community with profile/signature links |
-| `blog` | Blog accepting comments with website field |
+| `other` | Review, deal, coupon, or resource types outside the core enum |
 | `social` | Social platform profile page |
 
 ## Related Skills

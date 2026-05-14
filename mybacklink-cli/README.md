@@ -22,9 +22,29 @@ mybacklinks status
 mybacklinks list-projects
 mybacklinks fetch-project-info --project-id <id>
 mybacklinks fetch-project-backlinks --project-id <id> --status indexed
+mybacklinks fetch-project-backlinks --domain example.com --all --json
 mybacklinks fetch-backlinks-by-domain --domain example.com --limit 500
 mybacklinks fetch-dr-by-domain --domain example.com
 mybacklinks fetch-traffic-by-domain --domain example.com
+```
+
+### Project backlinks vs. raw domain discovery
+
+Use `fetch-project-backlinks` when you want tracked MyBacklinks project records:
+submitted links, statuses, target URLs, resource metadata, and notes.
+
+```bash
+mybacklinks fetch-project-backlinks --domain example.com --all --json
+mybacklinks fetch-project-backlinks --project-id <id> --status pending --json
+```
+
+Use `fetch-backlinks-by-domain` when you want raw provider-discovered backlinks
+for any domain, including competitors or domains that are not MyBacklinks
+projects. This output is labeled `semantic: "raw_provider_discovery"` so
+automations do not confuse it with tracked project submissions.
+
+```bash
+mybacklinks fetch-backlinks-by-domain --domain competitor.com --limit 500 --json
 ```
 
 ### Fetch more domain backlinks
