@@ -12,6 +12,7 @@ import {
 	getCommandDefinitions,
 	getGlobalParams,
 } from "./command-registry.js";
+import { buildCreateProjectInput } from "./create-project-input.js";
 import {
 	type StoredCredentials,
 	deleteCredentials,
@@ -24,6 +25,7 @@ import { getCommandResultHint } from "./hints.js";
 import { invokeTool, normalizeBaseUrl, validateCredentials } from "./http.js";
 import { loginWithOAuth } from "./oauth.js";
 import { USER_AGENT } from "./shared.js";
+import { getSupportIssueHint, printSupportIssueHint } from "./support.js";
 import { performUpdate, startUpdateCheck } from "./update.js";
 
 const updateCheck = startUpdateCheck();
@@ -42,6 +44,7 @@ async function main() {
 			},
 			outputFormat,
 		);
+		printSupportIssueHint();
 		return;
 	}
 
@@ -95,6 +98,7 @@ async function main() {
 			},
 			outputFormat,
 		);
+		printSupportIssueHint();
 		return;
 	}
 
@@ -105,6 +109,7 @@ async function main() {
 			await deleteCredentials();
 		}
 		printOutput({ message: "Logged out successfully" }, outputFormat);
+		printSupportIssueHint();
 		return;
 	}
 
@@ -128,6 +133,7 @@ async function main() {
 			credentials,
 		});
 		printOutput(transformResult(commandName, allResults), outputFormat);
+		printSupportIssueHint();
 		return;
 	}
 
@@ -142,6 +148,7 @@ async function main() {
 	printPaginationHint(commandName, result);
 	printCommandResultHint(commandName, result);
 	printOutput(transformed, outputFormat);
+	printSupportIssueHint();
 }
 
 async function buildInput(
@@ -164,6 +171,8 @@ async function buildInput(
 					status: getStringFlag(flags, "status"),
 				}),
 			});
+		case "create-project":
+			return buildCreateProjectInput(flags);
 		case "list-backlink-resources":
 			return compactObject({
 				limit: getNumberFlag(flags, "limit"),
@@ -753,6 +762,7 @@ function renderHelp() {
 	}
 
 	w("\nRun `mybacklinks <command> --help` for detailed usage of any command.\n");
+	w(`\n${getSupportIssueHint()}\n`);
 }
 
 function renderCommandHelp(def: ReturnType<typeof getCommandDefinition>) {
@@ -783,12 +793,15 @@ function renderCommandHelp(def: ReturnType<typeof getCommandDefinition>) {
 			w(`  ${example}\n`);
 		}
 	}
+
+	w(`\n${getSupportIssueHint()}\n`);
 }
 
 await main().catch((error) => {
 	process.stderr.write(
 		`${error instanceof Error ? error.message : "Command failed."}\n`,
 	);
+	printSupportIssueHint();
 	process.exitCode = 1;
 });
 

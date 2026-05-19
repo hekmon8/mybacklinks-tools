@@ -20,6 +20,7 @@ mybacklinks login --api-key mbk_xxxxx
 ```bash
 mybacklinks status
 mybacklinks list-projects
+mybacklinks create-project --name "Example" --url https://example.com --type website --json
 mybacklinks fetch-project-info --project-id <id>
 mybacklinks update-project-info --project-id <id> --contact-emails hello@example.com,ops@example.com
 mybacklinks fetch-project-backlinks --project-id <id> --status indexed
@@ -29,6 +30,24 @@ mybacklinks discover-backlink-opportunities --project-id <id> --payment-type fre
 mybacklinks fetch-backlinks-by-domain --domain example.com --limit 500
 mybacklinks fetch-dr-by-domain --domain example.com
 mybacklinks fetch-traffic-by-domain --domain example.com
+```
+
+### Create a project
+
+Use `create-project` to add a project before tracking backlink campaign work.
+The required fields are `--name`, `--url`, and `--type` (`website`, `app`, or
+`other`). Optional autofill fields include contact emails, reusable long
+descriptions, comment templates, social URLs, metadata URLs, `--status`,
+`--group-name`, and `--pinned`.
+
+```bash
+mybacklinks create-project \
+  --name "Example" \
+  --url https://example.com \
+  --type website \
+  --contact-emails hello@example.com,ops@example.com \
+  --social-urls https://x.com/example,https://github.com/example \
+  --json
 ```
 
 ### Project backlinks vs. raw domain discovery
@@ -76,6 +95,12 @@ mybacklinks fetch-backlinks-by-domain --domain example.com --all --limit 500 --j
 - `--json`: explicitly request JSON output
 - `--md`: Markdown output for agents and human review
 - `--base-url`: override API origin
+
+## Support
+
+The CLI keeps command output machine-readable. Support hints are written to
+stderr and help text. File bugs, rough edges, or feature requests at
+https://github.com/hekmon8/ai-cf-mybacklinks/issues.
 
 ## Auth storage
 

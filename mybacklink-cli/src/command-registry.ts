@@ -114,6 +114,117 @@ const commandDefinitions: CliCommandDefinition[] = [
 		],
 	},
 	{
+		name: "create-project",
+		toolName: "createProject",
+		toolPath: "/api/mcp/tools/projects/create",
+		description: "Create a project in the current account",
+		params: [
+			{
+				name: "name",
+				type: "string",
+				required: true,
+				description: "Project display name",
+			},
+			{
+				name: "url",
+				type: "string",
+				required: true,
+				description: "Project URL, including protocol",
+			},
+			{
+				name: "type",
+				type: "string",
+				required: true,
+				description: "Project type (website, app, other)",
+			},
+			{
+				name: "description",
+				type: "string",
+				description: "Project description",
+			},
+			{
+				name: "icon",
+				type: "string",
+				description: "Project icon URL",
+			},
+			{
+				name: "contact-email",
+				type: "string",
+				description: "Single project contact email for submission forms",
+			},
+			{
+				name: "contact-emails",
+				type: "string",
+				description: "Comma-separated project contact emails",
+			},
+			{
+				name: "long-description",
+				type: "string",
+				description: "Single reusable long project description",
+			},
+			{
+				name: "long-descriptions",
+				type: "string",
+				description: "Comma-separated reusable long project descriptions",
+			},
+			{
+				name: "comment-template",
+				type: "string",
+				description: "Single reusable submission comment template",
+			},
+			{
+				name: "comment-templates",
+				type: "string",
+				description: "Comma-separated reusable submission comment templates",
+			},
+			{
+				name: "social-url",
+				type: "string",
+				description: "Single project social profile URL",
+			},
+			{
+				name: "social-urls",
+				type: "string",
+				description: "Comma-separated project social profile URLs",
+			},
+			{
+				name: "sitemap-url",
+				type: "string",
+				description: "Project sitemap URL",
+			},
+			{
+				name: "llms-txt-url",
+				type: "string",
+				description: "Project llms.txt URL",
+			},
+			{
+				name: "robots-txt-url",
+				type: "string",
+				description: "Project robots.txt URL",
+			},
+			{
+				name: "status",
+				type: "string",
+				description: "Project status (active, archived)",
+				defaultValue: "active",
+			},
+			{
+				name: "group-name",
+				type: "string",
+				description: "Project group name",
+			},
+			{
+				name: "pinned",
+				type: "boolean",
+				description: "Pin the project in dashboards",
+			},
+		],
+		examples: [
+			'mybacklinks create-project --name "Example" --url https://example.com --type website --json',
+			'mybacklinks create-project --name "Example App" --url https://app.example.com --type app --contact-email hello@example.com',
+		],
+	},
+	{
 		name: "list-backlink-resources",
 		toolName: "listBacklinkResources",
 		toolPath: "/api/mcp/tools/link-resources/list",

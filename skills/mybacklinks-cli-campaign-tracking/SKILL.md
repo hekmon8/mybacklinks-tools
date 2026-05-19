@@ -5,6 +5,7 @@ version: 1.0.0
 author: MyBacklinks
 triggers:
   - list projects
+  - create project
   - get project info
   - update project
   - list backlinks for project
@@ -75,7 +76,64 @@ mybacklinks list-projects --all --json
 
 ---
 
-### 2. fetch-project-info
+### 2. create-project
+
+Create a new project in your account. Each project can then be used with backlink tracking commands.
+
+**When to use:** Start tracking a new website, app, or product before adding campaign backlinks.
+
+```bash
+mybacklinks create-project --name <name> --url <url> --type <website|app|other> [options]
+```
+
+| Option | Required | Type | Description |
+|--------|----------|------|-------------|
+| `--name` | Yes | string | Project display name |
+| `--url` | Yes | string | Project URL with protocol |
+| `--type` | Yes | string | Project type: `website`, `app`, or `other` |
+| `--description` | No | string | Project description |
+| `--contact-email` | No | string | Single project contact email |
+| `--contact-emails` | No | string | Comma-separated contact emails |
+| `--long-descriptions` | No | string | Comma-separated reusable long descriptions |
+| `--comment-templates` | No | string | Comma-separated reusable submission comments |
+| `--social-urls` | No | string | Comma-separated social profile URLs |
+| `--sitemap-url` | No | string | Project sitemap URL |
+| `--llms-txt-url` | No | string | Project llms.txt URL |
+| `--robots-txt-url` | No | string | Project robots.txt URL |
+| `--status` | No | string | Project status, default `active` |
+| `--group-name` | No | string | Project group name |
+| `--pinned` | No | boolean | Pin the project |
+
+**Examples:**
+
+```bash
+mybacklinks create-project --name "Example" --url https://example.com --type website --json
+
+mybacklinks create-project \
+  --name "Example App" \
+  --url https://app.example.com \
+  --type app \
+  --contact-email hello@example.com \
+  --social-urls https://x.com/example,https://github.com/example \
+  --json
+```
+
+**Typical response fields:**
+
+| Field | Description |
+|-------|-------------|
+| `id` | Project UUID for follow-up commands |
+| `name` | Project display name |
+| `url` | Project URL |
+| `type` | Project type |
+| `status` | Project status |
+| `contactEmails` | Autofill contact emails |
+| `createdAt` | Creation timestamp |
+| `updatedAt` | Last update timestamp |
+
+---
+
+### 3. fetch-project-info
 
 Fetch detailed information for a single project by ID or domain.
 
@@ -102,7 +160,7 @@ mybacklinks fetch-project-info --domain mybacklinks.app --json
 
 ---
 
-### 3. update-project-info
+### 4. update-project-info
 
 Update metadata for an existing project.
 
@@ -130,7 +188,7 @@ mybacklinks update-project-info --project-id proj_abc --url "https://newsaas.com
 
 ---
 
-### 4. fetch-project-backlinks
+### 5. fetch-project-backlinks
 
 Retrieve backlinks associated with a project. Supports filtering and pagination.
 
@@ -172,7 +230,7 @@ mybacklinks fetch-project-backlinks --project-id proj_abc --anchor-text "AI tool
 
 ---
 
-### 5. update-project-backlinks
+### 6. update-project-backlinks
 
 Create a new backlink record or update an existing one within a project. Supports single-entry mode via CLI flags or batch mode via a JSON file.
 
@@ -254,12 +312,16 @@ mybacklinks update-project-backlinks --file backlinks.json
    ```bash
    mybacklinks list-projects --json
    ```
-2. **Find resources** from your database (see [resource management](../mybacklinks-cli-resource-management/)):
+2. **Create one when needed:**
+   ```bash
+   mybacklinks create-project --name "My SaaS" --url https://mysaas.com --type website --json
+   ```
+3. **Find resources** from your database (see [resource management](../mybacklinks-cli-resource-management/)):
    ```bash
    mybacklinks list-backlink-resources --type directory --payment-type free --dr-min 20 --json
    ```
-3. **Submit your site** to each resource (manually or via [blog-commenter-skill](../blog-commenter-skill/)).
-4. **Log each backlink:**
+4. **Submit your site** to each resource (manually or via [blog-commenter-skill](../blog-commenter-skill/)).
+5. **Log each backlink:**
    ```bash
    mybacklinks update-project-backlinks \
      --project-id <id> \
@@ -269,7 +331,7 @@ mybacklinks update-project-backlinks --file backlinks.json
      --anchor "my keyword" \
      --status pending
    ```
-5. **Monitor indexing** over time:
+6. **Monitor indexing** over time:
    ```bash
    mybacklinks fetch-project-backlinks --project-id <id> --status pending --json
    ```
