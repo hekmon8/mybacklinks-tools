@@ -1,5 +1,5 @@
 export const SUPPORT_ISSUE_URL =
-	"https://github.com/hekmon8/ai-cf-mybacklinks/issues";
+	"https://github.com/hekmon8/mybacklinks-tools/issues";
 
 export function getSupportIssueHint() {
 	return `Support: report CLI bugs, rough edges, or feature requests at ${SUPPORT_ISSUE_URL}`;

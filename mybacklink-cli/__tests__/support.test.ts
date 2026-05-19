@@ -12,7 +12,7 @@ test('support hint points users to GitHub issues without embedding JSON data', (
 
 	assert.match(hint, /Support:/);
 	assert.match(hint, /bugs, rough edges, or feature requests/);
-	assert.equal(SUPPORT_ISSUE_URL, 'https://github.com/hekmon8/ai-cf-mybacklinks/issues');
+	assert.equal(SUPPORT_ISSUE_URL, 'https://github.com/hekmon8/mybacklinks-tools/issues');
 	assert.doesNotThrow(() => JSON.stringify({ ok: true }));
 });
 
