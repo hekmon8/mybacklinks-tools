@@ -27,6 +27,11 @@ const GLOBAL_PARAMS: ParamDef[] = [
 		description: "Output as Markdown for agents and human review",
 	},
 	{
+		name: "csv",
+		type: "boolean",
+		description: "Output tabular data as CSV",
+	},
+	{
 		name: "base-url",
 		type: "string",
 		description: "Override server URL",
