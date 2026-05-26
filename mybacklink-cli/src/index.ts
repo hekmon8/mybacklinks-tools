@@ -34,6 +34,7 @@ import {
 	validateCredentials,
 } from "./http.js";
 import { loginWithOAuth } from "./oauth.js";
+import { buildResourceFileInput } from "./resource-file.js";
 import { USER_AGENT } from "./shared.js";
 import { getSupportIssueHint, printSupportIssueHint } from "./support.js";
 import { performUpdate, startUpdateCheck } from "./update.js";
@@ -270,6 +271,10 @@ async function buildInput(
 				}),
 			});
 		case "add-backlink-resource":
+			if (getStringFlag(flags, "file")) {
+				return buildResourceFileInput(requiredString(flags, "file"));
+			}
+
 			return compactObject({
 				domain: requiredString(flags, "domain"),
 				type: getResourceTypeFlag(flags, "type") ?? "directory",
