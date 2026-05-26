@@ -20,7 +20,12 @@ import {
 	requireCredentials,
 	saveCredentials,
 } from "./credentials.js";
-import { printOutput, renderOutput, resolveOutputFormat } from "./format.js";
+import {
+	type OutputFormat,
+	printOutput,
+	renderOutput,
+	resolveOutputFormat,
+} from "./format.js";
 import { getCommandResultHint } from "./hints.js";
 import {
 	NetworkRequestError,
@@ -42,7 +47,8 @@ async function main() {
 	const baseUrl = getStringFlag(parsed.flags, "base-url");
 
 	if (commandName === "version" || getBooleanFlag(parsed.flags, "version")) {
-		printOutput(
+		writeCommandOutput(
+			"version",
 			{
 				name: "@mybacklinks/cli",
 				version: "0.1.4",
@@ -92,7 +98,8 @@ async function main() {
 		await validateCredentials(credentials, baseUrl);
 		await saveCredentials(credentials);
 
-		printOutput(
+		writeCommandOutput(
+			"login",
 			{
 				message:
 					credentials.authMode === "api_key"
@@ -113,7 +120,11 @@ async function main() {
 			await revokeRemoteCredentials(credentials, baseUrl);
 			await deleteCredentials();
 		}
-		printOutput({ message: "Logged out successfully" }, outputFormat);
+		writeCommandOutput(
+			"logout",
+			{ message: "Logged out successfully" },
+			outputFormat,
+		);
 		printSupportIssueHint();
 		return;
 	}
@@ -137,7 +148,12 @@ async function main() {
 			baseUrl,
 			credentials,
 		});
-		printOutput(transformResult(commandName, allResults), outputFormat);
+		writeCommandOutput(
+			commandName,
+			transformResult(commandName, allResults),
+			outputFormat,
+			allResults,
+		);
 		printSupportIssueHint();
 		return;
 	}
@@ -152,8 +168,72 @@ async function main() {
 	const transformed = transformResult(commandName, result);
 	printPaginationHint(commandName, result);
 	printCommandResultHint(commandName, result);
-	printOutput(transformed, outputFormat);
+	writeCommandOutput(commandName, transformed, outputFormat, result);
 	printSupportIssueHint();
+}
+
+function writeCommandOutput(
+	commandName: string,
+	data: unknown,
+	format: OutputFormat,
+	source: unknown = data,
+) {
+	const output =
+		format === "json" ? withJsonMeta(commandName, data, source) : data;
+	printOutput(output, format);
+}
+
+function withJsonMeta(commandName: string, data: unknown, source: unknown) {
+	return {
+		meta: {
+			command: commandName,
+			fetchedAt: new Date().toISOString(),
+			...extractOutputMeta(commandName, data, source),
+		},
+		data,
+	};
+}
+
+function extractOutputMeta(commandName: string, data: unknown, source: unknown) {
+	const dataRecord = isRecord(data) ? data : undefined;
+	const sourceRecord = isRecord(source) ? source : undefined;
+	const record = dataRecord ?? sourceRecord;
+	if (!record) return {};
+
+	const paginationSource = sourceRecord?.pagination ?? record.pagination;
+	const summarySource = sourceRecord?.summary ?? record.summary;
+	const pagination = isRecord(paginationSource) ? paginationSource : undefined;
+	const summary = isRecord(summarySource) ? summarySource : undefined;
+	const arrayKey = Object.keys(record).find((key) => Array.isArray(record[key]));
+	const arrayLength = arrayKey
+		? (record[arrayKey] as unknown[]).length
+		: undefined;
+	const total =
+		numberValue(record.total) ??
+		numberValue(summary?.totalResources) ??
+		numberValue(summary?.totalCount) ??
+		numberValue(summary?.returnedCount) ??
+		arrayLength;
+	const limit = numberValue(pagination?.limit) ?? numberValue(record.limit);
+	const offset = numberValue(pagination?.offset) ?? numberValue(record.offset);
+	const page =
+		numberValue(pagination?.page) ??
+		(limit && offset !== undefined
+			? Math.floor(offset / limit) + 1
+			: undefined);
+
+	return compactObject({
+		total,
+		page: page ?? (isPaginatedCommand(commandName) ? 1 : undefined),
+		nextCursor:
+			typeof sourceRecord?.nextCursor === "string"
+				? sourceRecord.nextCursor
+				: undefined,
+	});
+}
+
+function numberValue(value: unknown) {
+	return typeof value === "number" && Number.isFinite(value) ? value : undefined;
 }
 
 async function buildInput(

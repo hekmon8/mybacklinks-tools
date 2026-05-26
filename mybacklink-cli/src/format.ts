@@ -8,7 +8,9 @@ function isPrimitive(value: unknown) {
 	);
 }
 
-export type OutputFormat = "json" | "md";
+export type OutputFormat = "json" | "md" | "csv";
+
+const MAX_TABLE_CELL_WIDTH = 80;
 
 function isEnabledFlag(value: string | boolean | undefined) {
 	if (value === true) {
@@ -25,16 +27,24 @@ function isEnabledFlag(value: string | boolean | undefined) {
 export function resolveOutputFormat(
 	flags: Record<string, string | boolean>,
 ): OutputFormat {
-	if (isEnabledFlag(flags.json) && isEnabledFlag(flags.md)) {
-		throw new Error("Options --json and --md cannot be used together.");
+	const enabled = ["json", "md", "csv"].filter((name) =>
+		isEnabledFlag(flags[name]),
+	);
+	if (enabled.length > 1) {
+		throw new Error("Options --json, --md, and --csv cannot be used together.");
 	}
 
+	if (isEnabledFlag(flags.csv)) return "csv";
 	return isEnabledFlag(flags.md) ? "md" : "json";
 }
 
 export function renderOutput(data: unknown, format: OutputFormat): string {
 	if (format === "json") {
 		return `${JSON.stringify(data, null, 2)}\n`;
+	}
+
+	if (format === "csv") {
+		return formatCsv(data);
 	}
 
 	return formatMarkdown(data);
@@ -131,11 +141,26 @@ function formatArray(arr: unknown[]): string {
 		return "_No items_\n";
 	}
 
-	const header = `| ${columns.join(" | ")} |`;
-	const separator = `| ${columns.map(() => "---").join(" | ")} |`;
-	const rows = objects.map(
+	const formattedRows = objects.map((row) =>
+		columns.map((col) => formatCell(row[col])),
+	);
+	const widths = columns.map((column, index) =>
+		Math.max(
+			column.length,
+			3,
+			...formattedRows.map((row) => visibleLength(row[index] ?? "")),
+		),
+	);
+
+	const header = `| ${columns
+		.map((column, index) => padCell(column, widths[index]))
+		.join(" | ")} |`;
+	const separator = `| ${widths.map((width) => "-".repeat(width)).join(" | ")} |`;
+	const rows = formattedRows.map(
 		(row) =>
-			`| ${columns.map((col) => formatCell(row[col])).join(" | ")} |`,
+			`| ${row
+				.map((cell, index) => padCell(cell, widths[index]))
+				.join(" | ")} |`,
 	);
 
 	return [header, separator, ...rows].join("\n") + "\n";
@@ -156,8 +181,66 @@ function formatCell(value: unknown): string {
 	if (typeof value === "boolean") return value ? "yes" : "no";
 	if (typeof value === "object") {
 		const json = JSON.stringify(value);
-		return json.length > 60 ? `${json.slice(0, 57)}...` : json;
+		return truncateCell(json);
 	}
 	const str = String(value);
-	return str.includes("|") ? str.replace(/\|/g, "\\|") : str;
+	return truncateCell(str).replace(/\|/g, "\\|");
+}
+
+function truncateCell(value: string): string {
+	if (value.length <= MAX_TABLE_CELL_WIDTH) return value;
+	return `${value.slice(0, MAX_TABLE_CELL_WIDTH - 3)}...`;
+}
+
+function visibleLength(value: string): number {
+	return value.replace(/\\\|/g, "|").length;
+}
+
+function padCell(value: string, width: number): string {
+	const padding = Math.max(0, width - visibleLength(value));
+	return `${value}${" ".repeat(padding)}`;
+}
+
+function formatCsv(data: unknown): string {
+	const rows = extractRows(data);
+	if (rows.length === 0) return "";
+
+	const columns = collectColumns(rows);
+	const lines = [
+		columns.map(escapeCsvValue).join(","),
+		...rows.map((row) =>
+			columns.map((column) => escapeCsvValue(row[column])).join(","),
+		),
+	];
+
+	return `${lines.join("\n")}\n`;
+}
+
+function extractRows(data: unknown): Record<string, unknown>[] {
+	if (Array.isArray(data)) {
+		return data.filter(isPlainObject);
+	}
+
+	if (!isPlainObject(data)) {
+		return [];
+	}
+
+	const arrayValue = Object.values(data).find(
+		(value): value is Record<string, unknown>[] =>
+			Array.isArray(value) && value.every(isPlainObject),
+	);
+
+	if (arrayValue) {
+		return arrayValue;
+	}
+
+	return [data];
+}
+
+function escapeCsvValue(value: unknown): string {
+	if (value === undefined || value === null) return "";
+	const raw = isPrimitive(value) ? String(value) : JSON.stringify(value);
+	const needsQuoting = /[",\n\r]/.test(raw);
+	const escaped = raw.replace(/"/g, '""');
+	return needsQuoting ? `"${escaped}"` : escaped;
 }

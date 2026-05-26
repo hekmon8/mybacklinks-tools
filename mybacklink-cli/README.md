@@ -91,9 +91,10 @@ mybacklinks fetch-backlinks-by-domain --domain example.com --all --limit 500 --j
 
 ## Output
 
-- Default: JSON output
+- Default: JSON output with `meta` and `data` fields
 - `--json`: explicitly request JSON output
 - `--md`: Markdown output for agents and human review
+- `--csv`: CSV output for tabular results
 - `--base-url`: override API origin
 
 ## Support
