@@ -100,7 +100,7 @@ mybacklinks fetch-backlinks-by-domain --domain example.com --all --limit 500 --j
 
 The CLI keeps command output machine-readable. Support hints are written to
 stderr and help text. File bugs, rough edges, or feature requests at
-https://github.com/hekmon8/mybacklinks-tools/issues.
+https://github.com/hekmon8/ai-cf-mybacklinks/issues.
 
 ## Auth storage
 
