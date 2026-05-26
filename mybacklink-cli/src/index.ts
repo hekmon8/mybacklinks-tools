@@ -20,9 +20,14 @@ import {
 	requireCredentials,
 	saveCredentials,
 } from "./credentials.js";
-import { printOutput, resolveOutputFormat } from "./format.js";
+import { printOutput, renderOutput, resolveOutputFormat } from "./format.js";
 import { getCommandResultHint } from "./hints.js";
-import { invokeTool, normalizeBaseUrl, validateCredentials } from "./http.js";
+import {
+	NetworkRequestError,
+	invokeTool,
+	normalizeBaseUrl,
+	validateCredentials,
+} from "./http.js";
 import { loginWithOAuth } from "./oauth.js";
 import { USER_AGENT } from "./shared.js";
 import { getSupportIssueHint, printSupportIssueHint } from "./support.js";
@@ -798,14 +803,49 @@ function renderCommandHelp(def: ReturnType<typeof getCommandDefinition>) {
 }
 
 await main().catch((error) => {
-	process.stderr.write(
-		`${error instanceof Error ? error.message : "Command failed."}\n`,
-	);
-	printSupportIssueHint();
+	const outputFormat = getErrorOutputFormat();
+	if (outputFormat === "json") {
+		process.stderr.write(renderOutput({ error: serializeCliError(error) }, "json"));
+	} else {
+		process.stderr.write(
+			`${error instanceof Error ? error.message : "Command failed."}\n`,
+		);
+		printSupportIssueHint();
+	}
 	process.exitCode = 1;
 });
 
 const latestVersion = await updateCheck;
 if (latestVersion) {
 	performUpdate(latestVersion);
+}
+
+function getErrorOutputFormat() {
+	try {
+		const parsed = parseArgv(process.argv.slice(2));
+		return resolveOutputFormat(parsed.flags);
+	} catch {
+		return "md";
+	}
+}
+
+function serializeCliError(error: unknown) {
+	if (error instanceof NetworkRequestError) {
+		return {
+			message: "Network request failed",
+			command: error.commandName,
+			baseUrl: error.baseUrl,
+			path: error.path,
+			timeoutMs: error.timeoutMs,
+			retryable: error.retryable,
+			cause: error.causeSummary,
+			details: error.message,
+			support: getSupportIssueHint(),
+		};
+	}
+
+	return {
+		message: error instanceof Error ? error.message : "Command failed.",
+		support: getSupportIssueHint(),
+	};
 }

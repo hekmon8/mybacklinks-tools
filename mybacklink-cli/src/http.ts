@@ -8,6 +8,15 @@ import {
 } from "./shared.js";
 
 const DEFAULT_REQUEST_TIMEOUT_MS = 120_000;
+const RETRYABLE_NETWORK_CODES = new Set([
+	"ECONNRESET",
+	"ETIMEDOUT",
+	"EAI_AGAIN",
+	"UND_ERR_CONNECT_TIMEOUT",
+	"UND_ERR_HEADERS_TIMEOUT",
+	"UND_ERR_BODY_TIMEOUT",
+	"UND_ERR_SOCKET",
+]);
 
 type ToolSuccessResponse = {
 	requestId: string;
@@ -22,6 +31,51 @@ type ToolErrorResponse = {
 		details?: unknown;
 	};
 };
+
+export type NetworkErrorCauseSummary = {
+	name?: string;
+	message?: string;
+	code?: string;
+	errno?: string | number;
+	syscall?: string;
+	address?: string;
+	port?: string | number;
+};
+
+export class NetworkRequestError extends Error {
+	readonly commandName: string;
+	readonly baseUrl: string;
+	readonly path: string;
+	readonly timeoutMs: number;
+	readonly retryable: boolean;
+	readonly causeSummary: NetworkErrorCauseSummary;
+
+	constructor(params: {
+		commandName: string;
+		baseUrl: string;
+		path: string;
+		timeoutMs: number;
+		cause: unknown;
+	}) {
+		const causeSummary = summarizeNetworkCause(params.cause);
+		const retryable = isLikelyRetryableNetworkFailure(causeSummary);
+		super(
+			formatNetworkRequestErrorMessage({
+				...params,
+				causeSummary,
+				retryable,
+			}),
+		);
+		this.name = "NetworkRequestError";
+		this.commandName = params.commandName;
+		this.baseUrl = params.baseUrl;
+		this.path = params.path;
+		this.timeoutMs = params.timeoutMs;
+		this.retryable = retryable;
+		this.causeSummary = causeSummary;
+		this.cause = params.cause;
+	}
+}
 
 export function normalizeBaseUrl(baseUrl?: string) {
 	return (baseUrl || DEFAULT_BASE_URL).replace(/\/+$/, "");
@@ -58,18 +112,29 @@ export async function invokeTool(params: {
 		resolvedBaseUrl,
 	);
 
-	const response = await fetch(`${resolvedBaseUrl}${definition.toolPath}`, {
-		method: "POST",
-		signal: AbortSignal.timeout(DEFAULT_REQUEST_TIMEOUT_MS),
-		headers: {
-			"content-type": "application/json",
-			authorization: `Bearer ${getBearerToken(credentials)}`,
-			"user-agent": USER_AGENT,
-			"x-mybacklinks-cli-command": params.commandName,
-			"x-mybacklinks-auth-mode": credentials.authMode,
-		},
-		body: JSON.stringify(params.input),
-	});
+	let response: Response;
+	try {
+		response = await fetch(`${resolvedBaseUrl}${definition.toolPath}`, {
+			method: "POST",
+			signal: AbortSignal.timeout(DEFAULT_REQUEST_TIMEOUT_MS),
+			headers: {
+				"content-type": "application/json",
+				authorization: `Bearer ${getBearerToken(credentials)}`,
+				"user-agent": USER_AGENT,
+				"x-mybacklinks-cli-command": params.commandName,
+				"x-mybacklinks-auth-mode": credentials.authMode,
+			},
+			body: JSON.stringify(params.input),
+		});
+	} catch (error) {
+		throw new NetworkRequestError({
+			commandName: params.commandName,
+			baseUrl: resolvedBaseUrl,
+			path: definition.toolPath,
+			timeoutMs: DEFAULT_REQUEST_TIMEOUT_MS,
+			cause: error,
+		});
+	}
 
 	const payload = (await response.json().catch(() => {
 		throw new Error(`Server returned an unparseable response (status ${response.status})`);
@@ -116,6 +181,109 @@ function formatValidationDetails(details: unknown) {
 	}
 
 	return parts.length > 0 ? parts.join("; ") : undefined;
+}
+
+function formatNetworkRequestErrorMessage(params: {
+	commandName: string;
+	baseUrl: string;
+	path: string;
+	timeoutMs: number;
+	causeSummary: NetworkErrorCauseSummary;
+	retryable: boolean;
+}) {
+	const cause = formatNetworkCauseSummary(params.causeSummary);
+	const retry = params.retryable ? "yes" : "no";
+	return [
+		`Network request failed while running ${params.commandName}.`,
+		`baseUrl: ${params.baseUrl}`,
+		`path: ${params.path}`,
+		`timeoutMs: ${params.timeoutMs}`,
+		`retryable: ${retry}`,
+		cause ? `cause: ${cause}` : undefined,
+	]
+		.filter(Boolean)
+		.join("\n");
+}
+
+function summarizeNetworkCause(error: unknown): NetworkErrorCauseSummary {
+	const cause = getNestedCause(error) ?? error;
+	const record = isErrorLike(cause) ? cause : undefined;
+	const topRecord = isErrorLike(error) ? error : undefined;
+
+	return compactObject({
+		name: getStringProperty(record, "name") ?? getStringProperty(topRecord, "name"),
+		message:
+			getStringProperty(record, "message") ??
+			getStringProperty(topRecord, "message"),
+		code: getStringProperty(record, "code") ?? getStringProperty(topRecord, "code"),
+		errno:
+			getStringOrNumberProperty(record, "errno") ??
+			getStringOrNumberProperty(topRecord, "errno"),
+		syscall:
+			getStringProperty(record, "syscall") ??
+			getStringProperty(topRecord, "syscall"),
+		address:
+			getStringProperty(record, "address") ??
+			getStringProperty(topRecord, "address"),
+		port:
+			getStringOrNumberProperty(record, "port") ??
+			getStringOrNumberProperty(topRecord, "port"),
+	});
+}
+
+function getNestedCause(error: unknown) {
+	if (!error || typeof error !== "object" || !("cause" in error)) {
+		return undefined;
+	}
+
+	return (error as { cause?: unknown }).cause;
+}
+
+function isLikelyRetryableNetworkFailure(cause: NetworkErrorCauseSummary) {
+	if (cause.code && RETRYABLE_NETWORK_CODES.has(cause.code)) {
+		return true;
+	}
+
+	return cause.name === "TimeoutError" || cause.name === "AbortError";
+}
+
+function formatNetworkCauseSummary(cause: NetworkErrorCauseSummary) {
+	const parts = [
+		cause.code,
+		cause.name,
+		cause.message,
+		cause.syscall,
+		cause.address,
+		cause.port === undefined ? undefined : String(cause.port),
+	].filter(Boolean);
+
+	return [...new Set(parts)].join(" ");
+}
+
+function isErrorLike(value: unknown): value is Record<string, unknown> {
+	return typeof value === "object" && value !== null;
+}
+
+function getStringProperty(
+	value: Record<string, unknown> | undefined,
+	key: string,
+) {
+	const item = value?.[key];
+	return typeof item === "string" && item.length > 0 ? item : undefined;
+}
+
+function getStringOrNumberProperty(
+	value: Record<string, unknown> | undefined,
+	key: string,
+) {
+	const item = value?.[key];
+	return typeof item === "string" || typeof item === "number" ? item : undefined;
+}
+
+function compactObject<T extends Record<string, unknown>>(value: T) {
+	return Object.fromEntries(
+		Object.entries(value).filter(([, item]) => item !== undefined),
+	) as Partial<T>;
 }
 
 async function ensureFreshCredentials(
