@@ -286,8 +286,7 @@ const commandDefinitions: CliCommandDefinition[] = [
 			{
 				name: "domain",
 				type: "string",
-				required: true,
-				description: "Domain of the resource",
+				description: "Domain of the resource (not needed when using --file)",
 			},
 			{
 				name: "type",
@@ -333,10 +332,18 @@ const commandDefinitions: CliCommandDefinition[] = [
 				type: "string",
 				description: "Additional notes",
 			},
+			{
+				name: "file",
+				type: "string",
+				description:
+					"JSON or CSV file for batch import (array, object with items/resources, or CSV rows)",
+			},
 		],
 		examples: [
 			"mybacklinks add-backlink-resource --domain blog.example.com --type blog",
 			"mybacklinks add-backlink-resource --domain dir.example.com --type directory --payment-type free --dr 45",
+			"mybacklinks add-backlink-resource --file resources.json",
+			"mybacklinks add-backlink-resource --file resources.csv --csv",
 		],
 	},
 	{

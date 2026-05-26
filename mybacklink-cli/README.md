@@ -89,6 +89,13 @@ mybacklinks fetch-backlinks-by-domain --domain example.com --offset 500 --limit 
 mybacklinks fetch-backlinks-by-domain --domain example.com --all --limit 500 --json
 ```
 
+Batch import backlink resources from JSON or CSV files:
+
+```bash
+mybacklinks add-backlink-resource --file resources.json
+mybacklinks add-backlink-resource --file resources.csv --csv
+```
+
 ## Output
 
 - Default: JSON output with `meta` and `data` fields
