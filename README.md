@@ -93,4 +93,4 @@ All packages are released under the MIT License.
 - 🌐 [MyBacklinks Website](https://mybacklinks.app)
 - 📚 [Documentation](https://docs.mybacklinks.app)
 - 📖 [MCP Setup Guide](https://hekmon8.github.io/mybacklinks-tools) - GitHub Pages
-- 🐛 [Report Issues](https://github.com/hekmon8/mybacklinks-tools/issues)
+- 🐛 [Report Issues](https://github.com/hekmon8/ai-cf-mybacklinks/issues)

@@ -178,6 +178,6 @@ MIT License - see [LICENSE](./LICENSE) for details.
 
 ## Support
 
-- 🐛 [Report bugs](https://github.com/hekmon8/mybacklinks-tools/issues)
-- 💡 [Request features](https://github.com/hekmon8/mybacklinks-tools/issues)
+- 🐛 [Report bugs](https://github.com/hekmon8/ai-cf-mybacklinks/issues)
+- 💡 [Request features](https://github.com/hekmon8/ai-cf-mybacklinks/issues)
 - 📧 Contact: support@mybacklinks.app

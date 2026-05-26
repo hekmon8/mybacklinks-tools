@@ -93,4 +93,4 @@ MyBacklinks 是一个专为独立开发者和副业项目构建者设计的综�
 - 🌐 [MyBacklinks 网站](https://mybacklinks.app)
 - 📚 [文档](https://docs.mybacklinks.app)
 - 📖 [MCP 设置指南](https://hekmon8.github.io/mybacklinks-tools) - GitHub Pages
-- 🐛 [报告问题](https://github.com/hekmon8/mybacklinks-tools/issues)
+- 🐛 [报告问题](https://github.com/hekmon8/ai-cf-mybacklinks/issues)
