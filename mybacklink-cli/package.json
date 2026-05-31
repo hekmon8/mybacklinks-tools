@@ -1,6 +1,6 @@
 {
 	"name": "@mybacklinks/cli",
-	"version": "0.1.9",
+	"version": "0.1.8",
 	"description": "Official CLI for MyBacklinks project, backlink, and domain research workflows",
 	"type": "module",
 	"bin": {
