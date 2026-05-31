@@ -641,7 +641,8 @@ const commandDefinitions: CliCommandDefinition[] = [
 			{
 				name: "backlink-url",
 				type: "string",
-				description: "URL where the backlink is placed",
+				description:
+					"URL where the backlink is placed (required when not using --backlink-id or --resource-id)",
 			},
 			{
 				name: "anchor",
@@ -670,7 +671,8 @@ const commandDefinitions: CliCommandDefinition[] = [
 			},
 		],
 		examples: [
-			"mybacklinks update-project-backlinks --project-id proj_abc --target-url https://mysite.com/page --anchor \"my keyword\"",
+			"mybacklinks update-project-backlinks --project-id proj_abc --target-url https://mysite.com/page --backlink-url https://directory.example/mysite --anchor \"my keyword\"",
+			"mybacklinks update-project-backlinks --project-id proj_abc --backlink-id bl_123 --status indexed",
 			"mybacklinks update-project-backlinks --file backlinks.json",
 		],
 	},

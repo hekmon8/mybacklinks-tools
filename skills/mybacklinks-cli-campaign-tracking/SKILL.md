@@ -246,7 +246,7 @@ mybacklinks update-project-backlinks --project-id <id> [options]
 | `--backlink-id` | No | string | Existing backlink ID (omit to create new) |
 | `--resource-id` | No | string | Link to a backlink resource from your database |
 | `--target-url` | No | string | Target URL on your site |
-| `--backlink-url` | No | string | URL where the backlink is placed |
+| `--backlink-url` | Cond. | string | URL where the backlink is placed. Required when not using `--backlink-id` or `--resource-id` |
 | `--anchor` | No | string | Anchor text |
 | `--status` | No | string | Backlink status |
 | `--utm-source` | No | string | UTM source tag for attribution |
