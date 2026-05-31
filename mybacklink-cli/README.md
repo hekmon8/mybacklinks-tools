@@ -120,6 +120,9 @@ Credentials are stored at `~/.config/mybacklinks/credentials.json`.
 - Publish tag pattern: `cli-v*` (example: `cli-v0.2.0`)
 - Push a matching tag after bumping `mybacklink-cli/package.json`
 
-### Required repository secrets
+### Publish authentication
 
-- `NPM_TOKEN`: npm automation token with permission to publish `@mybacklinks/cli`
+- Preferred: npm Trusted Publishing configured for `hekmon8/mybacklinks-tools`
+  and workflow file `publish-cli.yml`.
+- Fallback: repository secret `NPM_TOKEN` with permission to publish
+  `@mybacklinks/cli`.

@@ -3,6 +3,11 @@
 	"version": "0.1.9",
 	"description": "Official CLI for MyBacklinks project, backlink, and domain research workflows",
 	"type": "module",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/hekmon8/mybacklinks-tools.git",
+		"directory": "mybacklink-cli"
+	},
 	"bin": {
 		"mybacklinks": "dist/index.js"
 	},
