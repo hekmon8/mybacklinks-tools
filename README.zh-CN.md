@@ -83,7 +83,6 @@ MyBacklinks 是一个专为独立开发者和副业项目构建者设计的综�
 - `publish-cli.yml` 监听 `cli-v*` tag，自动发布 [`@mybacklinks/cli`](https://www.npmjs.com/package/@mybacklinks/cli) 到 npm。
 - 发布流程：先更新 `mybacklink-cli/package.json` 版本，再 push 对应的 `cli-v*` tag。
 - 优先使用 npm Trusted Publishing，配置仓库为 `hekmon8/mybacklinks-tools`，workflow 文件为 `publish-cli.yml`。
-- fallback 方式：仓库 Secret `NPM_TOKEN`，且该 token 需要有 `@mybacklinks/cli` 发布权限。
 
 ## 许可证
 

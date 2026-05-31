@@ -124,5 +124,3 @@ Credentials are stored at `~/.config/mybacklinks/credentials.json`.
 
 - Preferred: npm Trusted Publishing configured for `hekmon8/mybacklinks-tools`
   and workflow file `publish-cli.yml`.
-- Fallback: repository secret `NPM_TOKEN` with permission to publish
-  `@mybacklinks/cli`.

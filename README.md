@@ -83,7 +83,6 @@ We welcome contributions! Each package has its own contributing guidelines.
 - `publish-cli.yml` listens for `cli-v*` tags and publishes [`@mybacklinks/cli`](https://www.npmjs.com/package/@mybacklinks/cli) to npm.
 - Release flow: bump `mybacklink-cli/package.json`, then push a matching `cli-v*` tag.
 - Preferred auth: npm Trusted Publishing for `hekmon8/mybacklinks-tools` and workflow file `publish-cli.yml`.
-- Fallback auth: repository secret `NPM_TOKEN` with publish permission for `@mybacklinks/cli`.
 
 ## License
 
