@@ -32,6 +32,22 @@ type ToolErrorResponse = {
 	};
 };
 
+export class ToolRequestError extends Error {
+	readonly status: number;
+	readonly code?: string;
+	readonly details?: unknown;
+	readonly requestId?: string;
+
+	constructor(params: { status: number; payload: ToolErrorResponse }) {
+		super(formatToolErrorMessage(params.status, params.payload));
+		this.name = "ToolRequestError";
+		this.status = params.status;
+		this.code = params.payload.error?.code;
+		this.details = params.payload.error?.details;
+		this.requestId = params.payload.requestId;
+	}
+}
+
 export type NetworkErrorCauseSummary = {
 	name?: string;
 	message?: string;
@@ -141,7 +157,7 @@ export async function invokeTool(params: {
 	})) as ToolSuccessResponse & ToolErrorResponse;
 
 	if (!response.ok) {
-		throw new Error(formatToolErrorMessage(response.status, payload));
+		throw new ToolRequestError({ status: response.status, payload });
 	}
 
 	return payload.data;

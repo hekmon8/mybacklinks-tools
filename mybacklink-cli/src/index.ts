@@ -34,6 +34,12 @@ import {
 	validateCredentials,
 } from "./http.js";
 import { loginWithOAuth } from "./oauth.js";
+import {
+	invokeProjectBacklinkBatchUpdate,
+	isProjectBacklinkBatchInput,
+} from "./project-backlink-batch.js";
+import { normalizeProjectBacklinkFileInput } from "./project-backlink-file.js";
+import { invokeToolWithRateLimitRetry } from "./rate-limit-retry.js";
 import { buildResourceFileInput } from "./resource-file.js";
 import { USER_AGENT } from "./shared.js";
 import { getSupportIssueHint, printSupportIssueHint } from "./support.js";
@@ -159,12 +165,35 @@ async function main() {
 		return;
 	}
 
-	const result = await invokeTool({
-		commandName,
-		input,
-		baseUrl,
-		credentials,
-	});
+	const result =
+		commandName === "update-project-backlinks" &&
+		isProjectBacklinkBatchInput(input)
+			? await invokeProjectBacklinkBatchUpdate({
+					input,
+					baseUrl,
+					credentials,
+					onRetry: (event) =>
+						printRateLimitRetryHint(
+							commandName,
+							event.attempt,
+							event.maxRetries,
+							event.delayMs,
+							event.index,
+						),
+				})
+			: await invokeToolWithRateLimitRetry({
+					commandName,
+					input,
+					baseUrl,
+					credentials,
+					onRetry: (event) =>
+						printRateLimitRetryHint(
+							commandName,
+							event.attempt,
+							event.maxRetries,
+							event.delayMs,
+						),
+				});
 
 	const transformed = transformResult(commandName, result);
 	printPaginationHint(commandName, result);
@@ -386,15 +415,7 @@ async function buildProjectBacklinkUpdateInput(
 		if (Array.isArray(parsed)) {
 			return { items: parsed };
 		}
-		if (isRecord(parsed)) {
-			if (!parsed.projectId && !Array.isArray(parsed.items)) {
-			throw new Error(
-				"--file JSON object must contain a `projectId` or `items` field.",
-			);
-			}
-			return parsed;
-		}
-		throw new Error("--file must be a JSON object or JSON array.");
+		return normalizeProjectBacklinkFileInput(parsed);
 	}
 
 	return compactObject({
@@ -830,6 +851,19 @@ function printCommandResultHint(commandName: string, result: unknown) {
 	if (hint) {
 		process.stderr.write(`\n${hint}\n`);
 	}
+}
+
+function printRateLimitRetryHint(
+	commandName: string,
+	attempt: number,
+	maxRetries: number,
+	delayMs: number,
+	itemIndex?: number,
+) {
+	const item = itemIndex === undefined ? "" : ` item ${itemIndex + 1}`;
+	process.stderr.write(
+		`Write rate limit hit while running ${commandName}${item}; retrying in ${Math.ceil(delayMs / 1000)}s (${attempt}/${maxRetries}).\n`,
+	);
 }
 
 function renderHelp() {

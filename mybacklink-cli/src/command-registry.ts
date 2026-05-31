@@ -620,7 +620,6 @@ const commandDefinitions: CliCommandDefinition[] = [
 			{
 				name: "project-id",
 				type: "string",
-				required: true,
 				description: "Project ID (not needed when using --file with projectId in JSON)",
 			},
 			{
