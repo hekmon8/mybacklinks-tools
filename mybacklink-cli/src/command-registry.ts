@@ -286,7 +286,12 @@ const commandDefinitions: CliCommandDefinition[] = [
 			{
 				name: "domain",
 				type: "string",
-				description: "Domain of the resource (not needed when using --file)",
+				description: "Domain of the resource (e.g. producthunt.com). Provide either --domain or --name (not needed when using --file)",
+			},
+			{
+				name: "name",
+				type: "string",
+				description: "Human-readable display name for brand-name resources (e.g. \"Hacker News\", \"Product Hunt\"). A URL-friendly key is derived automatically when --domain is not provided.",
 			},
 			{
 				name: "type",
@@ -342,6 +347,8 @@ const commandDefinitions: CliCommandDefinition[] = [
 		examples: [
 			"mybacklinks add-backlink-resource --domain blog.example.com --type blog",
 			"mybacklinks add-backlink-resource --domain dir.example.com --type directory --payment-type free --dr 45",
+			"mybacklinks add-backlink-resource --name \"Hacker News (Show HN)\" --type forum --submission-url https://news.ycombinator.com/submit",
+			"mybacklinks add-backlink-resource --name \"Product Hunt\" --type directory --submission-url https://www.producthunt.com/posts/new",
 			"mybacklinks add-backlink-resource --file resources.json",
 			"mybacklinks add-backlink-resource --file resources.csv --csv",
 		],

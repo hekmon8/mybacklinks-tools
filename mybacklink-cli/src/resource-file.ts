@@ -68,6 +68,7 @@ function normalizeResourceRow(row: ResourceFileRow) {
 
 	return compactObject({
 		domain: stringValue(normalized.domain),
+		name: stringValue(normalized.name),
 		type: stringValue(normalized.type),
 		submissionUrl: stringValue(normalized.submissionUrl),
 		paymentType: stringValue(normalized.paymentType),

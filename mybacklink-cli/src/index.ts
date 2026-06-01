@@ -304,8 +304,13 @@ async function buildInput(
 				return buildResourceFileInput(requiredString(flags, "file"));
 			}
 
+			if (!getStringFlag(flags, "domain") && !getStringFlag(flags, "name")) {
+				throw new Error("Missing required option: provide --domain or --name");
+			}
+
 			return compactObject({
-				domain: requiredString(flags, "domain"),
+				domain: getStringFlag(flags, "domain"),
+				name: getStringFlag(flags, "name"),
 				type: getResourceTypeFlag(flags, "type") ?? "directory",
 				submissionUrl: getStringFlag(flags, "submission-url"),
 				paymentType: getStringFlag(flags, "payment-type") ?? "free",
