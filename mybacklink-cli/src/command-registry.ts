@@ -640,6 +640,12 @@ const commandDefinitions: CliCommandDefinition[] = [
 				description: "Backlink resource ID to link",
 			},
 			{
+				name: "allow-multiple-targets",
+				type: "boolean",
+				description:
+					"Allow recording a second target URL for the same project/resource after duplicate-risk review",
+			},
+			{
 				name: "target-url",
 				type: "string",
 				description: "Target URL on your site",
@@ -678,6 +684,7 @@ const commandDefinitions: CliCommandDefinition[] = [
 		],
 		examples: [
 			"mybacklinks update-project-backlinks --project-id proj_abc --target-url https://mysite.com/page --backlink-url https://directory.example/mysite --anchor \"my keyword\"",
+			"mybacklinks update-project-backlinks --project-id proj_abc --resource-id res_123 --target-url https://mysite.com/second-tool --allow-multiple-targets",
 			"mybacklinks update-project-backlinks --project-id proj_abc --backlink-id bl_123 --status indexed",
 			"mybacklinks update-project-backlinks --file backlinks.json",
 		],

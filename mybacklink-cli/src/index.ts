@@ -427,6 +427,10 @@ async function buildProjectBacklinkUpdateInput(
 		projectId: requiredString(flags, "project-id"),
 		backlinkId: getStringFlag(flags, "backlink-id"),
 		resourceId: getStringFlag(flags, "resource-id"),
+		allowMultipleTargets:
+			"allow-multiple-targets" in flags
+				? getBooleanFlag(flags, "allow-multiple-targets")
+				: undefined,
 		targetUrl: getStringFlag(flags, "target-url"),
 		backlinkUrl: getStringFlag(flags, "backlink-url"),
 		anchor: getStringFlag(flags, "anchor"),
