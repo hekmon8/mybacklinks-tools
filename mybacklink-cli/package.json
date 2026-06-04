@@ -17,7 +17,8 @@
 	],
 	"scripts": {
 		"build": "tsc -p tsconfig.json",
-		"dev": "node --import tsx src/index.ts"
+		"dev": "node --import tsx src/index.ts",
+		"test": "node --import tsx --test"
 	},
 	"keywords": [
 		"seo",
