@@ -43,7 +43,7 @@ import { invokeToolWithRateLimitRetry } from "./rate-limit-retry.js";
 import { buildResourceFileInput } from "./resource-file.js";
 import { USER_AGENT } from "./shared.js";
 import { getSupportIssueHint, printSupportIssueHint } from "./support.js";
-import { performUpdate, startUpdateCheck } from "./update.js";
+import { getCurrentVersion, performUpdate, startUpdateCheck } from "./update.js";
 
 const updateCheck = startUpdateCheck();
 
@@ -58,7 +58,7 @@ async function main() {
 			"version",
 			{
 				name: "@mybacklinks/cli",
-				version: "0.1.4",
+				version: getCurrentVersion(),
 			},
 			outputFormat,
 		);
