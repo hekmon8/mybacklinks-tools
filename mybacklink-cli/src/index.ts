@@ -288,6 +288,15 @@ async function buildInput(
 			});
 		case "create-project":
 			return buildCreateProjectInput(flags);
+		case "list-servers":
+			return compactObject({
+				limit: getNumberFlag(flags, "limit"),
+				cursor: getStringFlag(flags, "cursor"),
+				filter: compactObject({
+					status: getStringFlag(flags, "status"),
+					provider: getStringFlag(flags, "provider"),
+				}),
+			});
 		case "list-backlink-resources":
 			return compactObject({
 				limit: getNumberFlag(flags, "limit"),
@@ -663,6 +672,7 @@ function validateRequiredParams(
 
 const PAGINATED_COMMANDS = new Set([
 	"list-projects",
+	"list-servers",
 	"list-backlink-resources",
 	"discover-backlink-opportunities",
 	"fetch-project-backlinks",
@@ -823,6 +833,8 @@ function getListKey(commandName: string) {
 	switch (commandName) {
 		case "list-projects":
 			return "projects";
+		case "list-servers":
+			return "servers";
 		case "list-backlink-resources":
 			return "resources";
 		case "discover-backlink-opportunities":

@@ -230,6 +230,44 @@ const commandDefinitions: CliCommandDefinition[] = [
 		],
 	},
 	{
+		name: "list-servers",
+		toolName: "listServers",
+		toolPath: "/api/mcp/tools/servers/list",
+		description: "List all servers in the current account",
+		params: [
+			{
+				name: "limit",
+				type: "number",
+				description: "Max number of servers to return per page",
+			},
+			{
+				name: "cursor",
+				type: "string",
+				description: "Pagination cursor from a previous response",
+			},
+			{
+				name: "all",
+				type: "boolean",
+				description: "Fetch all pages automatically",
+			},
+			{
+				name: "status",
+				type: "string",
+				description: "Filter by server status",
+			},
+			{
+				name: "provider",
+				type: "string",
+				description: "Filter by hosting provider",
+			},
+		],
+		examples: [
+			"mybacklinks list-servers",
+			"mybacklinks list-servers --status active --json",
+			"mybacklinks list-servers --provider Cloudflare --all",
+		],
+	},
+	{
 		name: "list-backlink-resources",
 		toolName: "listBacklinkResources",
 		toolPath: "/api/mcp/tools/link-resources/list",

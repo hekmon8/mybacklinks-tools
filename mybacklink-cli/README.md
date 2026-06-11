@@ -21,6 +21,7 @@ mybacklinks login --api-key mbk_xxxxx
 mybacklinks status
 mybacklinks list-projects
 mybacklinks create-project --name "Example" --url https://example.com --type website --json
+mybacklinks list-servers --all --json
 mybacklinks fetch-project-info --project-id <id>
 mybacklinks update-project-info --project-id <id> --contact-emails hello@example.com,ops@example.com
 mybacklinks fetch-project-backlinks --project-id <id> --status indexed
@@ -49,6 +50,20 @@ mybacklinks create-project \
   --social-urls https://x.com/example,https://github.com/example \
   --json
 ```
+
+### List servers
+
+Use `list-servers` to review all hosting/infrastructure servers saved in the
+current account. It is read-only and supports cursor pagination.
+
+```bash
+mybacklinks list-servers --json
+mybacklinks list-servers --status active --provider Cloudflare --json
+mybacklinks list-servers --all --csv
+```
+
+Each server includes identity, hostname/IP, provider, status, billing fields,
+notes, timestamps, and `projectCount` for linked projects.
 
 ### Project backlinks vs. raw domain discovery
 
