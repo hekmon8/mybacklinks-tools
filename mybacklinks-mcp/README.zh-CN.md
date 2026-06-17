@@ -6,7 +6,7 @@
 
 ---
 
-**mybacklinks-mcp** 提供将 AI 助手（Claude Code、Cursor、Codex、Kelivo）连接到 [MyBacklinks](https://mybacklinks.app) MCP 服务器的配置指南和示例。
+**mybacklinks-mcp** 提供将 AI 助手（ChatGPT、Claude Code、Cursor、Codex、Kelivo）连接到 [MyBacklinks](https://mybacklinks.app) MCP 服务器的配置指南和示例。
 
 > 🆕 **新上线！** 查看我们的[详细教程](https://hekmon8.github.io/mybacklinks-tools/)，了解如何使用 AI Agent 自动化管理外链！
 
@@ -45,6 +45,7 @@ MyBacklinks 是一个为独立开发者和 Side Project 创建者设计的外链
 | Claude Code | Streamable HTTP | ✅ 内置 |
 | Cursor | Streamable HTTP | ✅ 内置 |
 | OpenAI Codex | Streamable HTTP | ✅ 内置 |
+| ChatGPT Apps / Connectors | Streamable HTTP | ✅ 内置 |
 | Kelivo（移动端）| Streamable HTTP | ✅ 内置 |
 
 ### 配置
@@ -84,6 +85,16 @@ url = "https://mybacklinks.app/mcp"
 ```
 
 查看 [`examples/`](./examples/) 目录获取完整的配置模板。
+
+### ChatGPT Connector
+
+如需在 ChatGPT 中测试 MyBacklinks，先在 ChatGPT 开启 developer mode，然后创建 connector：
+
+- **Connector name**: MyBacklinks
+- **Description**: Manage backlink projects, resources, opportunities, submissions, infrastructure servers, and SEO analytics.
+- **Connector URL**: `https://mybacklinks.app/mcp`
+
+ChatGPT 会通过 `/.well-known/oauth-protected-resource` 和 `/.well-known/oauth-authorization-server` 发现 OAuth 元数据，并用 authorization-code + PKCE OAuth 连接用户的 MyBacklinks 账户。生产提审时，请使用 ChatGPT app management 页面显示的 `https://chatgpt.com/connector/oauth/{callback_id}` 作为回调 URL。
 
 ### 命令行集成
 

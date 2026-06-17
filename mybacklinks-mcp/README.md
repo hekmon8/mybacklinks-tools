@@ -6,7 +6,7 @@
 
 ---
 
-**mybacklinks-mcp** provides configuration guides and examples for connecting AI assistants (Claude Code, Cursor, Codex, Kelivo) to the [MyBacklinks](https://mybacklinks.app) MCP server.
+**mybacklinks-mcp** provides configuration guides and examples for connecting AI assistants (ChatGPT, Claude Code, Cursor, Codex, Kelivo) to the [MyBacklinks](https://mybacklinks.app) MCP server.
 
 > 🆕 **New!** Check out our [detailed guide](https://hekmon8.github.io/mybacklinks-tools/) on automating backlink management with AI agents!
 
@@ -45,6 +45,7 @@ When connected, your AI assistant can use these MCP tools:
 | Claude Code | Streamable HTTP | ✅ Built-in |
 | Cursor | Streamable HTTP | ✅ Built-in |
 | OpenAI Codex | Streamable HTTP | ✅ Built-in |
+| ChatGPT Apps / Connectors | Streamable HTTP | ✅ Built-in |
 | Kelivo (Mobile) | Streamable HTTP | ✅ Built-in |
 
 ### Configuration
@@ -84,6 +85,16 @@ url = "https://mybacklinks.app/mcp"
 ```
 
 See the [`examples/`](./examples/) directory for complete configuration templates.
+
+### ChatGPT Connector
+
+To test MyBacklinks inside ChatGPT, enable developer mode in ChatGPT, then create a connector with:
+
+- **Connector name**: MyBacklinks
+- **Description**: Manage backlink projects, resources, opportunities, submissions, infrastructure servers, and SEO analytics.
+- **Connector URL**: `https://mybacklinks.app/mcp`
+
+ChatGPT discovers OAuth metadata from `/.well-known/oauth-protected-resource` and `/.well-known/oauth-authorization-server`, then links the user's MyBacklinks account with authorization-code + PKCE OAuth. Use `https://chatgpt.com/connector/oauth/{callback_id}` as the production redirect URI shown in ChatGPT's app management page.
 
 ### CLI Integration
 
