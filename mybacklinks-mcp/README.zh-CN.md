@@ -135,6 +135,19 @@ codex mcp list
 
 无需手动设置——只需配置 URL 即可开始使用！
 
+### Agentic Payments
+
+MyBacklinks 也预留了 Cloudflare Agentic Payments 风格的可选支持，面向 Hermes、Cloudflare Agents SDK client 或私有 MCP client 这类受控 agent。
+
+当服务端启用后，配置为 paid 的 MCP 工具会在执行前返回 HTTP `402 Payment Required`，并携带 `PAYMENT-REQUIRED` 与 `WWW-Authenticate: Payment` challenge。支持 x402 / MPP 的客户端完成支付后可重试调用。
+
+当前约束：
+
+- 默认关闭，不影响普通 OAuth/API Key 使用。
+- 它是 MyBacklinks 鉴权后的额外支付证明，不替代账号授权。
+- 真实 facilitator、wallet、MPP session 校验属于部署侧配置，默认公开 MCP 配置不需要。
+- 这个机制面向私有/受控 agent，不用于在公开 ChatGPT Apps 内售卖 MyBacklinks credits。
+
 ## 使用场景
 
 ### 追踪外链提交状态

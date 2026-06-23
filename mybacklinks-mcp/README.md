@@ -135,6 +135,19 @@ When you first use the MCP server, your AI client will automatically:
 
 No manual setup required—just configure the URL and start using it!
 
+### Agentic Payments
+
+MyBacklinks also has optional Cloudflare Agentic Payments-style support for controlled agents such as Hermes, Cloudflare Agents SDK clients, or private MCP clients.
+
+When enabled on the MyBacklinks server, paid MCP tools return HTTP `402 Payment Required` with `PAYMENT-REQUIRED` and `WWW-Authenticate: Payment` challenges before the tool runs. A capable x402 / MPP client can pay and retry the call.
+
+Current constraints:
+
+- It is disabled by default and does not affect normal OAuth/API Key usage.
+- It is an extra payment proof after MyBacklinks authentication, not a replacement for account authorization.
+- Real facilitator, wallet, and MPP session verification are deployment-specific and are not required for the default public MCP setup.
+- This is intended for private/controlled agents, not for selling MyBacklinks credits inside public ChatGPT Apps.
+
 ## Use Cases
 
 ### Track Your Backlink Submissions
