@@ -572,6 +572,11 @@ const commandDefinitions: CliCommandDefinition[] = [
 				description: "New project URL",
 			},
 			{
+				name: "icon",
+				type: "string",
+				description: "Project icon URL",
+			},
+			{
 				name: "contact-email",
 				type: "string",
 				description: "Single project contact email for submission forms",
