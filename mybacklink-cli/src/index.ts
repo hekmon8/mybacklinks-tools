@@ -12,6 +12,7 @@ import {
 	getCommandDefinitions,
 	getGlobalParams,
 } from "./command-registry.js";
+import { transformDomainMetricResult } from "./domain-metric-result.js";
 import { buildCreateProjectInput } from "./create-project-input.js";
 import {
 	type StoredCredentials,
@@ -369,6 +370,7 @@ async function buildInput(
 				name: getStringFlag(flags, "name"),
 				description: getStringFlag(flags, "description"),
 				url: getStringFlag(flags, "url"),
+				icon: getStringFlag(flags, "icon"),
 				contactEmails: getContactEmailsFlag(flags),
 				status: getStringFlag(flags, "status"),
 			});
@@ -408,6 +410,7 @@ async function buildInput(
 		case "fetch-traffic-by-domain":
 			return {
 				domain: requiredString(flags, "domain"),
+				metric: commandName === "fetch-traffic-by-domain" ? "traffic" : "dr",
 			};
 		default:
 			throw new Error(`Command not implemented: ${commandName}`);
@@ -450,44 +453,16 @@ async function buildProjectBacklinkUpdateInput(
 }
 
 function transformResult(commandName: string, result: unknown) {
+	if (commandName === "fetch-dr-by-domain" || commandName === "fetch-traffic-by-domain") {
+		return transformDomainMetricResult(commandName, result);
+	}
 	if (!result || typeof result !== "object") return result;
-
-	// Strip nextCursor from paginated responses (pagination hint is shown separately on stderr)
+	// Pagination hints are shown separately on stderr.
 	if (isPaginatedCommand(commandName)) {
 		const { nextCursor: _, ...rest } = result as Record<string, unknown>;
 		return rest;
 	}
-
-	if (
-		commandName !== "fetch-dr-by-domain" &&
-		commandName !== "fetch-traffic-by-domain"
-	) {
-		return result;
-	}
-
-	if (
-		!("metrics" in result) ||
-		typeof (result as Record<string, unknown>).metrics !== "object" ||
-		!(result as Record<string, unknown>).metrics
-	) {
-		return result;
-	}
-
-	const r = result as Record<string, unknown>;
-	const metrics = r.metrics as Record<string, unknown>;
-	return commandName === "fetch-dr-by-domain"
-		? {
-				domain: r.domain,
-				dr: metrics.dr,
-				creditCost: r.creditCost,
-				creditBalance: r.creditBalance,
-			}
-		: {
-				domain: r.domain,
-				traffic: metrics.traffic,
-				creditCost: r.creditCost,
-				creditBalance: r.creditBalance,
-			};
+	return result;
 }
 
 function requiredString(flags: Record<string, string | boolean>, name: string) {
